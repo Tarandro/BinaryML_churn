@@ -78,6 +78,7 @@ class BinaryML_tabular:
                                            class_weight = self.class_weight, subsample = subsample ,info_stats = info_stats, remove_low_variance = remove_low_variance,
                                            remove_percentage = remove_percentage, multicollinearity_threshold = multicollinearity_threshold,
                                            feature_selection_threshold = feature_selection_threshold,
+                                           info_pca = info_pca, info_tsne = info_tsne,
                                            method_nan_categorical = method_nan_categorical, method_nan_numeric = method_nan_numeric)
 
         self.target = self.pre.target
