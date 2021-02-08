@@ -117,7 +117,7 @@ if __name__ == '__main__':
     df_all_results.to_csv('./results/results_tabular/df_all_results.csv', index=False)
     bml.show_distribution_scores()
 
-    df_oof_val = bml.Y_train
+    df_oof_val = bml.Y_train.copy()
     for name in bml.models.keys():
         df_oof_val[name] = bml.models[name].info_scores['oof_val']
     df_oof_val.to_csv('./results/results_tabular/df_oof_val.csv', index=False)

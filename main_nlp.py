@@ -1,5 +1,6 @@
 import pandas as pd
 from binaryML import BinaryML
+from extraction_words import *
 
 #####################
 # Parameters
@@ -89,7 +90,7 @@ if __name__ == '__main__':
     df_all_results.to_csv('./results/results_nlp/df_all_results.csv', index=False)
     bml.show_distribution_scores()
 
-    df_oof_val = bml.Y_train
+    df_oof_val = bml.Y_train.copy()
     for name in bml.models.keys():
         df_oof_val[name] = bml.models[name].info_scores['oof_val']
     df_oof_val.to_csv('./results/results_nlp/df_oof_val.csv', index=False)
@@ -110,4 +111,14 @@ if __name__ == '__main__':
     leaderboard_test = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='test')
     print(leaderboard_test)
     leaderboard_test.to_csv('./results/results_nlp/leaderboard_test.csv', index=False)
+
+    ##################
+    # Extraction words
+    ##################
+    pr = {0: 'NEGATIVE', 1: 'POSITIVE'}
+    n_influent_word = 10
+    type_data = 'train'  # 'test'
+
+    if 'Fasttext_Attention' in bml.models.keys() or 'BERT' in bml.models.keys():
+        extract_influent_word(bml, type_data, n_influent_word, pr)
 
