@@ -32,7 +32,7 @@ exclude_model = ['Fasttext_Attention', 'BERT']   # FastText work only with pre-t
                                                       # Need GPU for BERT
 # NLP : ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression', 'Fasttext_Attention', 'BERT']
 
-method_embedding = {'Fasttext_Attention': '../input/fasttext-french-2b-300d/cc.fr.300.vec',
+method_embedding = {'Fasttext_Attention': '/kaggle/input/fasttext-french-2b-300d/cc.fr.300.vec',
                     'BERT': 'CamemBERT',
                     'spacy': [('all', False), (['ADJ', 'NOUN', 'VERB', 'DET'], False),
                               (['ADJ', 'NOUN'], True)]}
