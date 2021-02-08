@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit_tabular as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,14 +6,14 @@ from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
 from PIL import Image
 
-### run application : streamlit run streamlit.py
+### run application : streamlit run streamlit_tabular.py
 
 ################
 # Load data
 ################
 
 
-st.header('BinaryML Visualization')
+st.header('BinaryML Tabular Visualization')
 
 data = pd.read_csv('./results/results_tabular/data.csv')
 data_preprocessed = pd.read_csv('./results/results_tabular/data_preprocessed.csv')

@@ -285,7 +285,10 @@ class BinaryML:
         plt.ylabel('True positive rate')
         plt.title('ROC Curve')
         plt.legend(loc='best')
-        plt.savefig('roc_curves.png')
+        if 'text' in self.objective:
+            plt.savefig('roc_curves_text.png')
+        else:
+            plt.savefig('roc_curves.png')
         plt.show()
 
     def correlation_models(self):

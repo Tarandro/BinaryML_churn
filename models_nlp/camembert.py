@@ -34,7 +34,7 @@ class BERT(Model):
             self.model_bert = transformers.TFRobertaModel.from_pretrained('roberta-base')
         elif method_embedding == 'CamemBERT':
             self.tokenizer = transformers.CamembertTokenizer.from_pretrained('jplu/tf-camembert-base')
-            self.model_bert = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
+            #self.model_bert = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
 
     def preprocessing_fit_transform(self, x, size_params = 'small', method_embedding = 'CamemBERT'):
         self.init_params(size_params, method_embedding)
@@ -107,8 +107,9 @@ class BERT(Model):
         #inp = {"ids" : input_ids, "att" : attention_mask, "tok" : token}
 
         # Embedding + vectorization LSTM
-        # Camembert_model = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
-        x = self.model_bert(input_ids ,attention_mask=attention_mask ,token_type_ids=token)
+        Camembert_model = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
+        x = Camembert_model(input_ids, attention_mask=attention_mask, token_type_ids=token)
+        #x = self.model_bert(input_ids ,attention_mask=attention_mask ,token_type_ids=token)
 
         x = tf.keras.layers.Dropout(self.p['dropout_rate'])(x[0])
         x = tf.keras.layers.GlobalAveragePooling1D()(x)

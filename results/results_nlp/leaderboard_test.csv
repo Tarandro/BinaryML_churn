@@ -1,0 +1,11 @@
+name,accuracy_test,recall_test,precision_test,f1_test,roc_auc_test
+tf-idf+SGDClassifier,0.875,0.7917,0.7917,0.7917,0.9308
+BlendModel,0.875,0.75,0.8182,0.7826,0.9323
+tf-idf+Logistic_Regression_ADJ_NOUN_VERB_DET,0.8625,0.75,0.7826,0.766,0.9457
+tf-idf+Logistic_Regression_ADJ_NOUN_lem,0.8625,0.75,0.7826,0.766,0.9271
+tf-idf+Naive_Bayes,0.8625,0.7083,0.8095,0.7556,0.9107
+tf-idf+Naive_Bayes_ADJ_NOUN_VERB_DET,0.8625,0.7083,0.8095,0.7556,0.9137
+tf-idf+SGDClassifier_ADJ_NOUN_lem,0.825,0.7917,0.6786,0.7308,0.881
+tf-idf+Logistic_Regression,0.8375,0.7083,0.7391,0.7234,0.8966
+tf-idf+Naive_Bayes_ADJ_NOUN_lem,0.8375,0.6667,0.7619,0.7111,0.9092
+tf-idf+SGDClassifier_ADJ_NOUN_VERB_DET,0.8125,0.625,0.7143,0.6667,0.9129
