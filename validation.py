@@ -5,16 +5,17 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from utils import *
 
+
 class Validation:
 
-    def __init__(self, objective, seed = 15, is_NN = False, name_model = None, class_weight = None):
+    def __init__(self, objective, seed=15, is_NN=False, name=None, class_weight=None):
         self.seed = seed
         self.objective = objective
         self.is_NN = is_NN
-        self.name_model = name_model
+        self.name = name
         self.class_weight = class_weight
 
-    def fit(self, model, x, y, nfolds = 5, scoring = 'accuracy', print_result = False):
+    def fit(self, model, x, y, nfolds=5, scoring='accuracy', print_result=False):
 
         self.oof_val = np.zeros((len(y),))
         self.fold_id = np.zeros((len(y),))
@@ -24,17 +25,23 @@ class Validation:
             # model.save_weights('model.h5')
             total_epochs = 0
 
-            kf = KFold(n_splits = nfolds, shuffle = True, random_state = self.seed)
+            kf = KFold(n_splits=nfolds, shuffle=True, random_state=self.seed)
 
-            for num_fold ,(train_index, val_index) in enumerate(kf.split(y)):
-                try:
-                    x_train, x_val = x.values[train_index], x.values[val_index]
-                except:
-                    x_train, x_val = x[train_index], x[val_index]
-                try:
+            for num_fold, (train_index, val_index) in enumerate(kf.split(y)):
+                if isinstance(x, dict):
+                    x_train, x_val = {}, {}
+                    for col in x.keys():
+                        x_train[col], x_val[col] = x[col][train_index], x[col][val_index]
                     y_train, y_val = y.values[train_index], y.values[val_index]
-                except:
-                    y_train, y_val = y[train_index], y[val_index]
+                else:
+                    try:
+                        x_train, x_val = x.values[train_index], x.values[val_index]
+                    except:
+                        x_train, x_val = x[train_index], x[val_index]
+                    try:
+                        y_train, y_val = y.values[train_index], y.values[val_index]
+                    except:
+                        y_train, y_val = y[train_index], y[val_index]
 
                 K.clear_session()
                 # model = model.set_weights(weights)

@@ -1,5 +1,5 @@
 import pandas as pd
-from binaryML_tabular import BinaryML_tabular
+from binaryML import BinaryML
 
 #####################
 # Parameters
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     data = pd.read_csv('./data/Churn_Modelling.csv')
     data = data.iloc[:, 3:]
 
-    bml = BinaryML_tabular(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
+    bml = BinaryML(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
                            print_result=print_result, max_run_time_per_modele=max_run_time_per_modele,
                            apply_stacking=apply_stacking, apply_blend_model=apply_blend_model,
                            exclude_model=exclude_model,

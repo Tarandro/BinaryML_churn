@@ -5,8 +5,8 @@ from sklearn.ensemble import StackingClassifier
 
 class Stacking(Model):
 
-    def __init__(self, objective, seed = 15, class_weight = None, models = {}, nfolds = 5):
-        Model.__init__(self, objective, seed, class_weight)
+    def __init__(self, objective, seed = 15, column_text = None, class_weight = None, models = {}, nfolds = 5):
+        Model.__init__(self, objective, seed, column_text, class_weight)
         self.name_model = 'Stacking'
         self.models = models
         self.nfolds = nfolds

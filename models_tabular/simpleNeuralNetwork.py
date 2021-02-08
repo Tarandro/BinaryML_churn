@@ -5,8 +5,8 @@ import tensorflow as tf
 
 class SimpleNeuralNetwork(Model):
 
-    def __init__(self, objective, seed=15, class_weight=None):
-        Model.__init__(self, objective, seed, class_weight)
+    def __init__(self, objective, seed = 15, column_text = None, class_weight = None):
+        Model.__init__(self, objective, seed, column_text, class_weight)
         self.name_model = 'SimpleNeuralNetwork'
         self.is_NN = True
 
