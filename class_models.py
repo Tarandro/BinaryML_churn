@@ -1,7 +1,7 @@
 from class_gridsearch import *
 from validation import *
 from prediction import *
-from preprocessing.preprocessing_nlp import reduce_text_data
+from preprocessing_data.preprocessing_nlp import reduce_text_data
 
 
 class Model:  # class parent

@@ -1,8 +1,8 @@
 from matplotlib.ticker import FormatStrFormatter
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 
-from preprocessing.preprocessing_tabular import *
-from preprocessing.preprocessing_nlp import *
+from preprocessing_data.preprocessing_tabular import *
+from preprocessing_data.preprocessing_nlp import *
 from models_tabular.regression_logistique import LogisticRegression_skl
 from models_tabular.randomForest import RandomForestClassifier_skl
 from models_tabular.catBoost import CatBoost

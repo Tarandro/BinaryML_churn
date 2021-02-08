@@ -105,7 +105,7 @@ def clean_text(text):
 
 
 def nlp_preprocessing_spacy(data):
-    """ nlp.pipe preprocessing from spacy """
+    """ nlp.pipe preprocessing_data from spacy """
     list_content = list(data)
     doc_spacy_data = [doc for doc in nlp.pipe(list_content, disable=["ner", "tok2vec", "parser"])]
     return doc_spacy_data
