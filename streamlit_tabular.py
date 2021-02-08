@@ -1,4 +1,4 @@
-import streamlit_tabular as st
+import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

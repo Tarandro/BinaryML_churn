@@ -1,4 +1,4 @@
-import streamlit_tabular as st
+import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,7 +6,7 @@ from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
 from PIL import Image
 
-### run application : streamlit run streamlit_tabular.py
+### run application : streamlit run streamlit_nlp.py
 
 ################
 # Load data
