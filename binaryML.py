@@ -165,6 +165,8 @@ class BinaryML:
                             for name in ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression']:
                                 self.name_models.append(name + '_lem')
                                 self.method_embedding[name + '_lem'] = (keep_pos_tag, lemmatize)
+                                if name in self.exclude_model:
+                                    self.exclude_model.append(name + '_lem')
                         else:
                             for name in ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression']:
                                 self.name_models.append(name)
@@ -175,10 +177,14 @@ class BinaryML:
                                 self.name_models.append(name + '_' + "_".join(keep_pos_tag) + '_lem')
                                 self.method_embedding[name + '_' + "_".join(keep_pos_tag) + '_lem'] = (
                                 keep_pos_tag, lemmatize)
+                                if name in self.exclude_model:
+                                    self.exclude_model.append(name + '_' + "_".join(keep_pos_tag) + '_lem')
                         else:
                             for name in ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression']:
                                 self.name_models.append(name + '_' + "_".join(keep_pos_tag))
                                 self.method_embedding[name + '_' + "_".join(keep_pos_tag)] = (keep_pos_tag, lemmatize)
+                                if name in self.exclude_model:
+                                    self.exclude_model.append(name + '_' + "_".join(keep_pos_tag))
                     class_models += [NaiveBayes_skl, SGDClassifier_skl, TfidfLogisticRegression_skl]
                 self.name_models += [name for name in ['Fasttext_Attention', 'BERT'] if
                                      name in self.method_embedding.keys()]
