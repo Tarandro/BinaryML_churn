@@ -25,7 +25,7 @@ class BERT(Model):
 
     def init_params(self, size_params = 'small', method_embedding = 'CamemBERT'):
         if size_params == 'small':
-            self.MAX_LEN = 250
+            self.MAX_LEN = 120
         else:
             self.MAX_LEN = 350
 
@@ -108,8 +108,9 @@ class BERT(Model):
         # Camembert_model = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
         x = self.model_bert(input_ids ,attention_mask=attention_mask ,token_type_ids=token)
 
-        x = tf.keras.layers.GlobalAveragePooling1D()(x[0])
-        x = tf.keras.layers.Dropout(self.p['dropout_rate'])(x)
+        x = tf.keras.layers.Dropout(self.p['dropout_rate'])(x[0])
+        x = tf.keras.layers.GlobalAveragePooling1D()(x)
+
 
 
         if 'binary_proba' in self.objective:
