@@ -114,9 +114,9 @@ class BERT(Model):
 
 
         if 'binary_proba' in self.objective:
-            out = Dense(1 ,'sigmoid')(x)
+            out = Dense(1,'sigmoid')(x)
         else:
-            out = Dense(self.nb_classes, activation="softmax")(x)
+            out = Dense(2, activation="softmax")(x)
 
         model = tf.keras.models.Model(inputs = inp, outputs = out)
 

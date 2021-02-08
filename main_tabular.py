@@ -111,7 +111,7 @@ if __name__ == '__main__':
     for name in bml.models.keys():
         df_oof_val[name] = bml.models[name].info_scores['oof_val']
 
-    if bml.objective == 'binary_proba':
+    if 'binary_proba' in bml.objective:
         bml.get_roc_curves()
 
     #####################
