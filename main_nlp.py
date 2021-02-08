@@ -51,18 +51,18 @@ if __name__ == '__main__':
                    apply_stacking=apply_stacking, apply_blend_model=apply_blend_model, exclude_model=exclude_model,
                    method_embedding=method_embedding)
 
-    data.to_csv('./results/results_tabular/data.csv', index=False)
-    bml.data.to_csv('./results/results_tabular/data_preprocessed.csv', index=False)
-    bml.X_train.to_csv('./results/results_tabular/X_train.csv', index=False)
-    bml.X_test.to_csv('./results/results_tabular/X_test.csv', index=False)
-    bml.Y_train.to_csv('./results/results_tabular/Y_train.csv', index=False)
-    bml.Y_test.to_csv('./results/results_tabular/Y_test.csv', index=False)
-
     #####################
     # Preprocessing
     #####################
 
     bml.data_preprocessing(data, target=target, column_text=column_text, frac=frac)
+
+    data.to_csv('./results/results_nlp/data.csv', index=False)
+    bml.data.to_csv('./results/results_nlp/data_preprocessed.csv', index=False)
+    bml.X_train.to_csv('./results/results_nlp/X_train.csv', index=False)
+    bml.X_test.to_csv('./results/results_nlp/X_test.csv', index=False)
+    bml.Y_train.to_csv('./results/results_nlp/Y_train.csv', index=False)
+    bml.Y_test.to_csv('./results/results_nlp/Y_test.csv', index=False)
 
     #####################
     # Training
@@ -82,17 +82,17 @@ if __name__ == '__main__':
 
     leaderboard_val = bml.get_leaderboard(sort_by = sort_leaderboard, dataset = 'val')
     print(leaderboard_val)
-    leaderboard_val.to_csv('./results/results_tabular/leaderboard_val.csv', index=False)
+    leaderboard_val.to_csv('./results/results_nlp/leaderboard_val.csv', index=False)
 
     bml.correlation_models()
     df_all_results = bml.get_df_all_results()
-    df_all_results.to_csv('./results/results_tabular/df_all_results.csv', index=False)
+    df_all_results.to_csv('./results/results_nlp/df_all_results.csv', index=False)
     bml.show_distribution_scores()
 
     df_oof_val = bml.Y_train
     for name in bml.models.keys():
         df_oof_val[name] = bml.models[name].info_scores['oof_val']
-    df_oof_val.to_csv('./results/results_tabular/df_oof_val.csv', index=False)
+    df_oof_val.to_csv('./results/results_nlp/df_oof_val.csv', index=False)
 
     if 'binary_proba' in bml.objective:
         bml.get_roc_curves()
@@ -105,9 +105,9 @@ if __name__ == '__main__':
     bml.leader_predict(on_test_data)  # or bml.leader_predict(aml.X_test, aml.Y_test)
 
     df_prediction = bml.dataframe_predictions
-    df_prediction.to_csv('./results/results_tabular/df_prediction.csv', index=False)
+    df_prediction.to_csv('./results/results_nlp/df_prediction.csv', index=False)
 
     leaderboard_test = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='test')
     print(leaderboard_test)
-    leaderboard_test.to_csv('./results/results_tabular/leaderboard_test.csv', index=False)
+    leaderboard_test.to_csv('./results/results_nlp/leaderboard_test.csv', index=False)
 

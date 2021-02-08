@@ -146,6 +146,12 @@ class GridSearch_NN:
                 for col in self.x.keys():
                     x_tr[col], x_val[col] = self.x[col][tr], self.x[col][te]
                 y_tr, y_val = self.y.values[tr], self.y.values[te]
+            elif isinstance(self.x, list):
+                x_tr, x_val = [], []
+                for col in range(len(self.x)):
+                    x_tr.append(self.x[col][tr])
+                    x_val.append(self.x[col][te])
+                y_tr, y_val = self.y.values[tr], self.y.values[te]
             else:
                 x_tr, x_val = self.x.values[tr], self.x.values[te]
                 y_tr, y_val = self.y.values[tr], self.y.values[te]
@@ -288,6 +294,12 @@ class GridSearch_NN:
                 x_tr, x_val = {}, {}
                 for col in self.x.keys():
                     x_tr[col], x_val[col] = self.x[col][tr], self.x[col][te]
+                y_tr, y_val = self.y.values[tr], self.y.values[te]
+            elif isinstance(self.x, list):
+                x_tr, x_val = [], []
+                for col in range(len(self.x)):
+                    x_tr.append(self.x[col][tr])
+                    x_val.append(self.x[col][te])
                 y_tr, y_val = self.y.values[tr], self.y.values[te]
             else:
                 x_tr, x_val = self.x.values[tr], self.x.values[te]

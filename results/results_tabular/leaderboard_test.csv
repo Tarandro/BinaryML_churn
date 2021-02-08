@@ -1,0 +1,9 @@
+name,accuracy_test,recall_test,precision_test,f1_test,roc_auc_test
+Random_Forest,0.835,0.6511,0.585,0.6163,0.8525
+BlendModel,0.8605,0.5479,0.7013,0.6152,0.8533
+XGBoost,0.866,0.4963,0.7623,0.6012,0.8525
+CatBoost,0.8205,0.6609,0.549,0.5998,0.8407
+LightGBM,0.8125,0.688,0.5303,0.5989,0.8488
+Stacking,0.8475,0.4914,0.6711,0.5674,0.8301
+Logistic_Regression,0.6985,0.6904,0.3707,0.4824,0.7571
+SimpleNeuralNetwork,0.7965,0.0,0.0,0.0,0.5

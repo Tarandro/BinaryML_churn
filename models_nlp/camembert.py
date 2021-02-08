@@ -55,7 +55,8 @@ class BERT(Model):
             ids[k ,:len(enc)] = enc
             att[k ,:len(enc)] = 1
 
-        x_preprocessed = {"ids" : ids, "att" : att, "tok" : tok}
+        #x_preprocessed = {"ids" : ids, "att" : att, "tok" : tok}
+        x_preprocessed = [ids, att, tok]
         return x_preprocessed
 
     def preprocessing_transform(self, x):
@@ -75,7 +76,8 @@ class BERT(Model):
             ids[k ,:len(enc)] = enc
             att[k ,:len(enc)] = 1
 
-        x_preprocessed = {"ids" : ids, "att" : att, "tok" : tok}
+        #x_preprocessed = {"ids" : ids, "att" : att, "tok" : tok}
+        x_preprocessed = [ids, att, tok]
         return x_preprocessed
 
     def initialize_params(self, x, y, params):
@@ -102,7 +104,7 @@ class BERT(Model):
         input_ids = tf.keras.layers.Input(shape = (self.MAX_LEN, ), dtype=tf.int32, name="ids")
         attention_mask = tf.keras.layers.Input(shape = (self.MAX_LEN, ), dtype=tf.int32, name="att")
         token = tf.keras.layers.Input(shape = (self.MAX_LEN, ), dtype=tf.int32, name="tok")
-        inp = {"ids" : input_ids, "att" : attention_mask, "tok" : token}
+        #inp = {"ids" : input_ids, "att" : attention_mask, "tok" : token}
 
         # Embedding + vectorization LSTM
         # Camembert_model = transformers.TFCamembertModel.from_pretrained("jplu/tf-camembert-base")
@@ -118,7 +120,7 @@ class BERT(Model):
         else:
             out = Dense(2, activation="softmax")(x)
 
-        model = tf.keras.models.Model(inputs = inp, outputs = out)
+        model = tf.keras.models.Model(inputs = [input_ids, attention_mask, token], outputs = out)
 
         optimizer = tf.keras.optimizers.Adam(learning_rate = self.p['learning_rate'])
         if 'binary_proba' in self.objective:
