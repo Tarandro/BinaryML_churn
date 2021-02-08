@@ -18,7 +18,7 @@ class Prediction:
             else:
                 self.prediction = model.predict(x)
         else:
-            if self.objective == 'binary_proba':
+            if 'binary_proba' in self.objective:
                 if 'pandas' in str(type(x)):
                     self.prediction = model.predict_proba(x.values)[:, 1]
                 else:
@@ -30,7 +30,7 @@ class Prediction:
                     self.prediction = model.predict(x)
 
         if y is not None:
-            if self.objective == 'binary' and self.is_NN:
+            if 'binary' in self.objective and self.is_NN:
                 self.prediction = np.argmax(self.prediction, axis=1).reshape(-1)
             else:
                 self.prediction = self.prediction.reshape(-1)
