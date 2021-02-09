@@ -1,5 +1,18 @@
 # BinaryML_churn
 
+Structure code :
+
+binaryML est la classe principale / initialisation, preprocessing, train_test_split, normalisation
+
+class_model est la classe parent des modèles
+
+Pour chaque modèle :
+	- on lance un gridsearch (class_gridsearch)
+	- puis validation (validation.py)
+
+Possibilité de predictions avec prediction.py
+
+
 code sur les notebooks:
 
 2 types de notebooks (aussi partagé sur kaggle):
