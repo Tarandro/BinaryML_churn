@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
 from PIL import Image
+from eda_utils import *
 
 ### run application : streamlit run streamlit_tabular.py
 
@@ -68,7 +69,7 @@ if Section == 'Score':
     """ Roc Curves"""
     st.image(roc_curves, use_column_width = True)
 
-else:
+elif Section =="Data":
     """ Data provided """
     data
 
@@ -76,3 +77,60 @@ else:
     data_preprocessed
 
     st.write('Predicted value :', ", ".join([col for col in Y_train.columns]))
+
+
+    """Corrélation entre variables"""
+    sns.set(rc={'figure.figsize': (12, 12)})
+    heatmap = sns.heatmap(data.corr(), annot=True)
+    fig = heatmap.get_figure()
+    st.pyplot(fig)
+
+
+    """Plots"""
+    """Chart pour chaque feature"""
+    showChart1 = st.checkbox("Afficher feature chart")
+    if showChart1:
+        st.plotly_chart(subplot_hist(data))
+
+    """Comparaison churn VS non-churn"""
+    data_sample_names = ['base', 'kept', 'churn']
+    graph1 = st.selectbox(
+        'Choisir le dataset de gauche :',
+        data_sample_names
+    )
+    graph2 = st.selectbox(
+        'Choisir le dataset de droite :',
+        data_sample_names
+    )
+    lost_clients = data[data['Exited'] == 1]
+    kept_clients = data[data['Exited'] == 0]
+    showChart2 = st.checkbox("Afficher comparison chart")
+    if showChart2:
+        comp_data1 = choose_datase(graph1, data_sample_names, [data, kept_clients, lost_clients])
+        comp_data2 = choose_datase(graph2, data_sample_names, [data, kept_clients, lost_clients])
+        st.plotly_chart(subplot_hist_comp(comp_data1, comp_data2))
+
+    """Part de churn en fonction de la valeur d'une variable"""
+    list_of_cat_var = ['Gender', 'Geography', 'Tenure', 'NumOfProducts', 'HasCrCard', 'IsActiveMember']
+    list_of_cont_var = ['Age', 'CreditScore', 'Balance', 'EstimatedSalary']
+    var_selec = list_of_cat_var + list_of_cont_var
+    var_choice = st.selectbox(
+        'Choisir une variable à étudier',
+        var_selec
+    )
+    if var_choice in list_of_cat_var:
+        countdata = barplot_countdata(data, var_choice)
+        fig = px.bar(countdata, x=var_choice, y="percentage", color='Exited', title="Exited by {}".format(var_choice))
+        st.plotly_chart(fig)
+
+    elif var_choice in list_of_cont_var:
+        data_cut = cutting(data, ['CreditScore', 'Balance', 'EstimatedSalary'], 10)
+        data_cut = cutting_bins(data_cut, 'Age')
+        countdata = barplot_countdata(data_cut, var_choice)
+        fig = px.bar(countdata, x=var_choice, y="percentage", color='Exited', title="Exited by {}".format(var_choice))
+        st.plotly_chart(fig)
+
+    else:
+        raise ValueError('Choisir une variable existante')
+
+
