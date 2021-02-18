@@ -34,7 +34,7 @@ except:
     pass
 
 Section = st.sidebar.radio(
-    'Section :', ['Score', 'Data'])
+    'Section :', ['Score', 'Data', 'Machine Learning explainability'])
 
 if Section == 'Score':
     """ Validation score """
@@ -134,7 +134,10 @@ elif Section =="Data":
     else:
         raise ValueError('Choisir une variable existante')
 
+elif Section =="Machine Learning explainability":
 
-elif Section == "Machine Learning explainability":
-    """Shap summary plot"""
-    shap_summary_plot()
+    """Shap force plot"""
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], X_shap), height=500)
+
+    """ Specific row """
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_row[1], data_for_prediction_array), height=500)
