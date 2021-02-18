@@ -6,6 +6,7 @@ from matplotlib.ticker import FormatStrFormatter
 import seaborn as sns
 from PIL import Image
 from eda_utils import *
+from feature_importance import *
 
 ### run application : streamlit run streamlit_tabular.py
 
@@ -134,3 +135,6 @@ elif Section =="Data":
         raise ValueError('Choisir une variable existante')
 
 
+elif Section == "Machine Learning explainability":
+    """Shap summary plot"""
+    shap_summary_plot()
