@@ -12,6 +12,10 @@ X_train = pd.read_csv('./results/results_tabular/X_train.csv')
 X_test = pd.read_csv('./results/results_tabular/X_test.csv')
 Y_train = pd.read_csv('./results/results_tabular/Y_train.csv')
 Y_test = pd.read_csv('./results/results_tabular/Y_test.csv')
+
+# TODO :
+#  for name_model in bml.models.keys():
+#       bml.models[name_model].best_model    (or self.models[name_model].best_model)
 model_fi = RandomForestClassifier(max_depth=7, n_estimators=150, class_weight='balanced')
 model_fi.fit(X_train, Y_train.values.ravel())
 
