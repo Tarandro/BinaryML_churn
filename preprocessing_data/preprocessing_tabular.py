@@ -129,9 +129,15 @@ def find_optimal_number(X):
 #############################
 #############################
 
-class Preprocessing:
+class Preprocessing_tabular:
 
     def __init__(self, data, target=None, type_columns=None):
+        """
+        Args:
+            data (dataframe)
+            target (str or list) : names of target columns
+            type_columns (dict) (optional): {'numeric':[], 'categorical':[], 'date':[]} categorize columns by their type
+        """
         self.data = data
 
         self.target = target
@@ -546,6 +552,10 @@ class Preprocessing:
         return self.data
 
     def transform(self, data_test):
+        """ apply same transformation as in the fit_transform for data_test
+        Args:
+            data_test (dataframe)
+        """
         has_target = False
         if self.target is not None:
             Y_test = data_test[[col for col in self.target if col in data_test.columns]]

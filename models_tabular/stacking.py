@@ -4,6 +4,10 @@ from sklearn.ensemble import StackingClassifier
 
 
 class Stacking(Model):
+    """ Stack of models with a final classifier (RandomForestClassifier)
+        Stacking allows to use the strength of each individual model by using
+        their output as input of a final estimator.
+     """
 
     def __init__(self, objective, seed = 15, column_text = None, class_weight = None, models = {}, nfolds = 5):
         Model.__init__(self, objective, seed, column_text, class_weight)

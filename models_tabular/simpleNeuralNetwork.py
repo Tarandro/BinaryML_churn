@@ -4,6 +4,7 @@ import tensorflow as tf
 
 
 class SimpleNeuralNetwork(Model):
+    """ Combination of 2 or 3 Networks : Dense + Dropout + BatchNormalization """
 
     def __init__(self, objective, seed = 15, column_text = None, class_weight = None):
         Model.__init__(self, objective, seed, column_text, class_weight)
@@ -52,7 +53,7 @@ class SimpleNeuralNetwork(Model):
                       }
             self.size_params = 'small'
 
-    def model(self, hyper_params={}):
+    def model(self):
         # Dense input
         inp = tf.keras.layers.Input(shape=(self.dense_shape,), name="inp")
         x = tf.keras.layers.BatchNormalization()(inp)

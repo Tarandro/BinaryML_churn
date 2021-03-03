@@ -2,7 +2,7 @@ from utils import *
 
 
 class BlendModel:
-    """ Average of oof_val predictions """
+    """ Average of model predictions """
     def __init__(self, objective, seed = 15):
         self.objective = objective
         self.seed = seed
@@ -10,6 +10,7 @@ class BlendModel:
         self.info_scores = {}
 
     def validation(self, models, x_train, y_train, print_result = False):
+        """ Average validation predictions of all models (models[name_model].info_scores['oof_val'])  """
 
         oof_val = None
         self.y_shape1 = y_train.shape[1]
@@ -32,6 +33,7 @@ class BlendModel:
         self.info_scores['fold_id'], self.info_scores['oof_val'] = models[name_model].info_scores['fold_id'], oof_val
 
     def prediction(self, models, x_test, y_test = None, print_result = False):
+        """ Average test predictions of all models (models[name_model].info_scores['prediction'])  """
 
         prediction = None
 

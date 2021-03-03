@@ -18,21 +18,41 @@ from models_nlp.tfidf_Logistic_Regression import TfidfLogisticRegression_skl
 from models_nlp.fastText import Fasttext_Attention
 from models_nlp.camembert import BERT
 
+
 class BinaryML:
 
-    def __init__(self, exclude_model=[], max_nb_model=None, max_run_time=None, max_run_time_per_modele=60,
-                 early_stopping=False, objective='binary',
-                 nfolds=5, keep_cv_pred=True, seed=15, class_weight=False, print_result=False, scoring="accuracy",
-                 verbose=0,
+    def __init__(self, exclude_model=[], max_nb_model=None, max_run_time=None, max_run_time_per_model=60,
+                 objective='binary', nfolds=5, seed=15,
+                 class_weight=False, print_result=False, scoring="accuracy", verbose=0,
                  size_params='small', apply_stacking=False, apply_blend_model=False, method_scaling="MinMaxScaler",
                  method_embedding={}):
+        """
+        Args:
+            exclude_model (list) : name of models to exclude
+            max_nb_model (int) : (not used) maximum of gridsearch iteration to try for each model
+            max_run_time (int) : (not used) maximum time in seconds for gridsearch
+            max_run_time_per_model (int) : maximum time in seconds for gridsearch for each model
+            nfolds (int) : number of folds during gridsearch and validation
+            seed (int)
+            class_weight (Boolean) : apply a weight for each class
+            print_result (Boolean) : show intermediate result
+            scoring (str) : metric optimized during gridsearch
+            verbose (int) : verbose for gridsearch
+            objective (str) : 'binary' or 'binary_proba' or 'text_binary' or 'text_binary_proba'
+            size_params (str) : 'small' or 'big', size of parameters range for gridsearch
+            apply_stacking (Boolean)
+            apply_blend_model (Boolean)
+            method_scaling (str) : 'MinMaxScaler' or 'RobustScaler' or 'StandardScaler' sklearn method to scale data
+            method_embedding (dict) : information about embedding method
+                e.g : {'Fasttext_Attention': '/kaggle/input/fasttext-french-2b-300d/cc.fr.300.vec', #path of pre-train model
+                       'BERT': 'CamemBERT',     # or 'Roberta'
+                       'spacy': [('all', False), (['ADJ', 'NOUN', 'VERB', 'DET'], False), (['ADJ', 'NOUN'], True)]} #(tag_to_keep, lemmatize)
+        """
         self.exclude_model = exclude_model
         self.max_nb_model = max_nb_model
         self.max_run_time = max_run_time
-        self.max_run_time_per_modele = max_run_time_per_modele
-        self.early_stopping = early_stopping
+        self.max_run_time_per_model = max_run_time_per_model
         self.nfolds = nfolds
-        self.keep_cv_pred = keep_cv_pred
         self.seed = seed
         if not class_weight:
             self.class_weight = None
@@ -46,11 +66,12 @@ class BinaryML:
         self.apply_stacking = apply_stacking
         self.apply_blend_model = apply_blend_model
         self.method_scaling = method_scaling
+        self.method_embedding = method_embedding
         self.info_scores = {}
 
-        self.method_embedding = method_embedding
-
     def split_data(self, frac=0.8):
+        """ split data and build X_train, X_test, Y_train, Y_test
+            if text : build doc_spacy_data_train and doc_spacy_data_test, documents preprocessed by spacy"""
         train_data = self.data.sample(frac=frac, random_state=self.seed)
         self.X_train = train_data.copy()
         self.Y_train = self.Y.loc[train_data.index, :]
@@ -70,6 +91,7 @@ class BinaryML:
                 self.doc_spacy_data_test = None
 
     def normalize_data(self):
+        """ Normalize X_train and X_test, fit apply only on X_train"""
         self.features = self.X_train.columns.values
         if self.method_scaling == 'MinMaxScaler':
             self.scaler = MinMaxScaler(feature_range=(0, 1))  # or (-1,1)
@@ -88,19 +110,21 @@ class BinaryML:
             pass
 
     def data_preprocessing(self, data, target=None, column_text=None,
-                           frac=0.8, normalize=True, remove_multicollinearity=False, feature_selection=False,
-                           subsample=1,
+                           frac=0.8, normalize=True, remove_multicollinearity=False, feature_selection=False, subsample=1,
                            info_pca={}, info_tsne={}, info_stats={}, remove_low_variance=False,
                            remove_percentage=0.8, multicollinearity_threshold=0.9, feature_selection_threshold=0.8,
                            method_nan_categorical='constant', method_nan_numeric='mean',
                            apply_small_clean=False):
+        """ Apply Preprocessing_tabular from preprocessing_tabular.py
+               or Preprocessing_NLP from preprocessing_nlp.py  """
 
         if not 'text' in self.objective:
-            self.pre = Preprocessing(data, target, None)
+            self.pre = Preprocessing_tabular(data, target, None)
             self.data = self.pre.fit_transform(remove_multicollinearity=remove_multicollinearity,
                                                feature_selection=feature_selection,
                                                class_weight=self.class_weight, subsample=subsample,
-                                               info_stats=info_stats, remove_low_variance=remove_low_variance,
+                                               info_stats=info_stats, info_pca=info_pca, info_tsne=info_tsne,
+                                               remove_low_variance=remove_low_variance,
                                                remove_percentage=remove_percentage,
                                                multicollinearity_threshold=multicollinearity_threshold,
                                                feature_selection_threshold=feature_selection_threshold,
@@ -124,6 +148,10 @@ class BinaryML:
             self.normalize_data()
 
     def preprocess_test_data(self, data_test):
+        """ apply same transformation as in the fit_transform for data_test
+        Args:
+            data_test (dataframe)
+        """
         self.data_test = self.pre.transform(data_test)
         if self.normalize and 'text' not in self.objective:
             self.data_test = pd.DataFrame(self.scaler.transform(self.data_test))
@@ -134,7 +162,9 @@ class BinaryML:
             self.doc_spacy_data_test = None
         return self.data_test
 
-    def train(self, x=None, y=None, timesteps=2):
+    def train(self, x=None, y=None):
+        """ Apply gridsearch, save the best model and apply validation for each model """
+        # if x and y are None use X_train and Y_train else use x and y :
         if x is not None:
             self.x_train = x
         else:
@@ -151,11 +181,10 @@ class BinaryML:
                             SimpleNeuralNetwork]
         else:
             if 'spacy' not in self.method_embedding.keys() or self.method_embedding['spacy'] == []:
-                self.name_models = ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression'] + [name for name in [ 'Fasttext_Attention', 'BERT'] if name in self.method_embedding.keys()]
-
-                class_models = [NaiveBayes_skl, SGDClassifier_skl, TfidfLogisticRegression_skl] + [
-                    [Fasttext_Attention, BERT][i] for i in range(2) if
-                    ['Fasttext_Attention', 'BERT'][i] in self.method_embedding.keys()]
+                self.name_models = ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression']
+                self.name_models += [name for name in [ 'Fasttext_Attention', 'BERT'] if name in self.method_embedding.keys()]
+                class_models = [NaiveBayes_skl, SGDClassifier_skl, TfidfLogisticRegression_skl]
+                class_models += [[Fasttext_Attention, BERT][i] for i in range(2) if ['Fasttext_Attention', 'BERT'][i] in self.method_embedding.keys()]
             else:
                 self.name_models = []
                 class_models = []
@@ -176,7 +205,7 @@ class BinaryML:
                             for name in ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression']:
                                 self.name_models.append(name + '_' + "_".join(keep_pos_tag) + '_lem')
                                 self.method_embedding[name + '_' + "_".join(keep_pos_tag) + '_lem'] = (
-                                keep_pos_tag, lemmatize)
+                                    keep_pos_tag, lemmatize)
                                 if name in self.exclude_model:
                                     self.exclude_model.append(name + '_' + "_".join(keep_pos_tag) + '_lem')
                         else:
@@ -206,9 +235,10 @@ class BinaryML:
                 self.models[name_model].binaryml(self.x_train, self.y_train, self.nfolds, self.scoring,
                                                  self.size_params, self.verbose,
                                                  self.doc_spacy_data_train, self.method_embedding, name_model,
-                                                 self.max_run_time_per_modele, self.print_result)
+                                                 self.max_run_time_per_model, self.print_result)
 
     def ensemble(self):
+        """ Apply ensemble model : Stacking and BlendModel """
         # stacking :
         if self.apply_stacking:
             allow_models = {name: model for name, model in self.models.items() if not self.models[name].is_NN}
@@ -222,7 +252,7 @@ class BinaryML:
             else:
                 self.apply_stacking = False
 
-        # blend model average or vote classifier :
+        # blend model average:
         if self.apply_blend_model:
             if len(self.models.keys()) >= 2:
                 print('\n\033[4m' + 'Blend' + ' Model\033[0m', ':' if self.print_result else '...', '\n')
@@ -237,6 +267,10 @@ class BinaryML:
             self.models['BlendModel'] = model_blend
 
     def get_leaderboard(self, dataset='val', sort_by='accuracy', ascending=False):
+        """ Metric scores for each best model
+        Return:
+             self.leaderboard (dataframe)
+        """
         self.metrics = ['accuracy', 'recall', 'precision', 'f1', 'roc_auc']
         self.leaderboard = {"name": list(self.models.keys())}
         for metric in self.metrics:
@@ -247,6 +281,10 @@ class BinaryML:
         return self.leaderboard
 
     def get_df_all_results(self):
+        """ Information gridsearch for each model
+        Return:
+            df_all_results (dataframe)
+        """
         df_all_results = pd.DataFrame()
         for name_model in self.models.keys():
             if name_model not in ['Stacking', 'BlendModel']:
@@ -292,6 +330,7 @@ class BinaryML:
         plt.show()
 
     def correlation_models(self):
+        """ correlation between cross-validation prediction of best models """
         result_val = pd.DataFrame(
             {name_model: self.models[name_model].info_scores['oof_val'].reshape(-1) for name_model in
              self.models.keys()})
@@ -300,6 +339,7 @@ class BinaryML:
         plt.show()
 
     def leader_predict(self, on_test_data=True, x=None, y=None):
+        """ Prediction on x or X_test (if on_test_data=True or x == None) for each best models """
         if on_test_data:  # predict on self.X_test
             for name_model in self.models.keys():
                 if name_model == 'BlendModel':

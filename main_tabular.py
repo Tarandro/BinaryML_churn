@@ -10,7 +10,7 @@ target = 'Exited'
 
 frac = 0.8  # train_test_split fraction                 (data is split in train/test with frac = % for training dataset)
 
-max_run_time_per_modele = 20                            # (limit gridsearch time for each model)
+max_run_time_per_model = 20                            # (limit gridsearch time for each model)
 
 scoring = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']
 sort_leaderboard = 'f1'   # ['accuracy','f1','recall','precision','roc_auc']
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     data = data.iloc[:, 3:]
 
     bml = BinaryML(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
-                           print_result=print_result, max_run_time_per_modele=max_run_time_per_modele,
+                           print_result=print_result, max_run_time_per_model=max_run_time_per_model,
                            apply_stacking=apply_stacking, apply_blend_model=apply_blend_model,
                            exclude_model=exclude_model,
                            method_scaling=method_scaling)

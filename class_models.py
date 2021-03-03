@@ -21,7 +21,7 @@ class Model:  # class parent
             self.gridsearch.train(x, y, nfolds, scoring, verbose, time_limit_per_model, self.name_model)
         else:
             self.gridsearch = GridSearch(self.model(), self.hyper_params(size_params))
-            self.gridsearch.train(x, y, nfolds, scoring, verbose, time_limit_per_model, self.objective)
+            self.gridsearch.train(x, y, nfolds, scoring, verbose, time_limit_per_model)
         self.best_params = self.gridsearch.best_params(print_result)
         self.best_cv_score = self.gridsearch.best_score(print_result)
         self.best_model = self.gridsearch.best_estimator(self.objective)

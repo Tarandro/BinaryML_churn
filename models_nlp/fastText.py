@@ -13,7 +13,6 @@ from tensorflow.python.keras.layers import Layer
 from hyperopt import hp
 
 
-
 class Fasttext_Attention(Model):
 
     def __init__(self, objective, seed=15, column_text=None, class_weight=None):
@@ -22,7 +21,7 @@ class Fasttext_Attention(Model):
         self.is_NN = True
 
     def hyper_params(self, size_params='small'):
-        self.size_params = 'small'
+        self.size_params = size_params
         if self.size_params == 'small':
             self.parameters = {'hidden_unit': hp.randint('hidden_unit_1', 120, 130),
                                'learning_rate': hp.choice('learning_rate', [1e-2, 1e-3]),
@@ -54,7 +53,6 @@ class Fasttext_Attention(Model):
 
         self.word_index = self.tokenizer.word_index
         self.vocab_idx_word = {idx: word for word, idx in self.tokenizer.word_index.items()}
-        # print('length vocab =', len(word_index))
 
         tok = pad_sequences(tok, maxlen=self.maxlen, padding='post')
 
@@ -73,8 +71,6 @@ class Fasttext_Attention(Model):
         return x_preprocessed
 
     def initialize_params(self, x, y, params):
-
-        # hu = [params['hidden_unit_1']] + [params['hidden_unit_'+str(i)] for i in range(2,4) if params['hidden_unit_'+str(i)] != 0]
 
         try:
             if self.size_params == 'small':
@@ -100,13 +96,11 @@ class Fasttext_Attention(Model):
         inp = {"tok": token}
 
         # Embedding + vectorization LSTM
-        x = Embedding(len(self.word_index) + 1, self.embed_size, weights=[self.embedding_matrix], trainable=True)(
-            token)  ## test false
+        x = Embedding(len(self.word_index) + 1, self.embed_size, weights=[self.embedding_matrix], trainable=True)(token)
         x = Bidirectional(tf.keras.layers.LSTM(int(self.p['hidden_unit']), return_sequences=True))(x)
         # x = Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True))(x)
         x = Dropout(self.p['dropout_rate'])(x)
         x = Attention(self.maxlen)(x)
-        # x = Dense(64, activation="relu")(x)
 
         if 'binary_proba' in self.objective:
             out = Dense(1, 'sigmoid')(x)
@@ -123,20 +117,23 @@ class Fasttext_Attention(Model):
 
         return model
 
+
 #################
 # Help function : Get fasttext pre-training-weight and attention head
 #################
 
-def get_coefs(word,*arr):
+def get_coefs(word, *arr):
     return word, np.asarray(arr, dtype='float32')
 
+
 def load_embeddings(embed_dir):
-    embedding_index = dict(get_coefs(*o.strip().split(" ")) for o in open(embed_dir, 'rt',encoding='utf-8'))
+    embedding_index = dict(get_coefs(*o.strip().split(" ")) for o in open(embed_dir, 'rt', encoding='utf-8'))
     return embedding_index
 
-def build_embedding_matrix(word_index, embeddings_index, max_features, lower = True, verbose = True):
+
+def build_embedding_matrix(word_index, embeddings_index, max_features, lower=True, verbose=True):
     embedding_matrix = np.zeros((max_features, 300))
-    for word, i in tqdm(word_index.items(),disable = not verbose):
+    for word, i in tqdm(word_index.items(), disable=not verbose):
         if lower:
             word = word.lower()
         if i >= max_features: continue
@@ -149,8 +146,9 @@ def build_embedding_matrix(word_index, embeddings_index, max_features, lower = T
             embedding_matrix[i] = embedding_vector
     return embedding_matrix
 
+
 def build_matrix(word_index, embeddings_index):
-    embedding_matrix = np.zeros((len(word_index) + 1,300))
+    embedding_matrix = np.zeros((len(word_index) + 1, 300))
     for word, i in word_index.items():
         try:
             embedding_matrix[i] = embeddings_index[word]
@@ -158,6 +156,9 @@ def build_matrix(word_index, embeddings_index):
             embedding_matrix[i] = embeddings_index["unknown"]
     return embedding_matrix
 
+#################
+# Build Attention Layer tensorflow :
+#################
 
 class Attention(Layer):
     def __init__(self, step_dim,
@@ -207,7 +208,7 @@ class Attention(Layer):
         step_dim = self.step_dim
 
         eij = K.reshape(K.dot(K.reshape(x, (-1, features_dim)),
-                        K.reshape(self.W, (features_dim, 1))), (-1, step_dim))
+                              K.reshape(self.W, (features_dim, 1))), (-1, step_dim))
 
         if self.bias:
             eij += self.b
@@ -226,4 +227,4 @@ class Attention(Layer):
         return K.sum(weighted_input, axis=1)
 
     def compute_output_shape(self, input_shape):
-        return input_shape[0],  self.features_dim
+        return input_shape[0], self.features_dim

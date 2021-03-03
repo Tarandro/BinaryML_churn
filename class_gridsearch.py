@@ -9,6 +9,7 @@ from sklearn.model_selection import RandomizedSearchCV
 import catboost as cat
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 from tensorflow.keras import backend as K
@@ -19,9 +20,16 @@ from hyperopt import hp, fmin, tpe, Trials
 from utils import compute_dict_class_weight
 
 
-
-def optimization_gridsearch(x, y, model, distributions, time_limit_per_model, nfolds, scoring, objective):
-    """ gridsearch function for sklearn model with time integrated """
+def optimization_gridsearch(x, y, model, distributions, time_limit_per_model, nfolds, scoring):
+    """ gridsearch function (RandomizedSearchCV) for model (not_Neural_Network) with time integrated
+    Args:
+        x, y (array or dataframe)
+        model : apply gridsearch on this model
+        distribution (dict) : parameters to try
+        time_limit_per_model (int) : time in seconds to try parameters
+        nfolds (int) : number of folds during gridsearch
+        scoring (str) : metric optimized during gridsearch
+    """
 
     print_details = False
 
@@ -73,15 +81,21 @@ def optimization_gridsearch(x, y, model, distributions, time_limit_per_model, nf
 
 
 class GridSearch:
+    """ Apply gridsearch for sklearn model, catboost, xgboost or lightgbm"""
 
     def __init__(self, model, hyper_params):
+        """
+        Args:
+            model : apply gridsearch on this model
+            hyper_params (dict) : parameters to try
+        """
         self.model = model
         self.model_2 = model
         self.hyper_params = hyper_params
 
-    def train(self, x, y, nfolds=5, scoring='accuracy', verbose=0, time_limit_per_model=60, objective='binary'):
+    def train(self, x, y, nfolds=5, scoring='accuracy', verbose=0, time_limit_per_model=60):
         self.df_all_results = optimization_gridsearch(x, y, self.model, self.hyper_params, time_limit_per_model, nfolds,
-                                                      scoring, objective)
+                                                      scoring)
         self.index_best_score = self.df_all_results.mean_test_score.argmax()
 
     def show_distribution_score(self):
@@ -89,6 +103,10 @@ class GridSearch:
         plt.show()
 
     def best_params(self, print_result=False):
+        """
+        Return:
+            params (dict) : best parameters from gridsearch
+        """
         params = self.df_all_results.loc[self.index_best_score, 'params']
         print_params = params.copy()
         if print_result:
@@ -100,12 +118,20 @@ class GridSearch:
         return params
 
     def best_score(self, print_result=False):
+        """
+        Return:
+            score (int) : best score from gridsearch
+        """
         score = self.df_all_results.loc[self.index_best_score, 'mean_test_score']
         if print_result:
             print('Mean cross-validated score of the best_estimator: ', np.round(score, 4))
         return score
 
     def best_estimator(self, objective):
+        """
+        Return:
+            model : best model from gridsearch
+        """
         if 'catboost' in str(type(self.model_2)):
             return cat.CatBoostClassifier(
                 random_state=self.model_2.get_param('random_state'),
@@ -121,6 +147,10 @@ class GridSearch:
         return self.df_all_results[['mean_fit_time', 'params', 'mean_test_score', 'std_test_score']].sort_values(
             by=sort_by, ascending=False).reset_index(drop=True)
 
+
+##############################
+##############################
+##############################
 
 class GridSearch_NN:
 

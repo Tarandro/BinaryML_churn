@@ -14,14 +14,14 @@ class CatBoost(Model):
 
     def hyper_params(self, size_params='small'):
         if size_params == 'small':
-            self.parameters = dict(iterations=randint(20, 200),  # [75, 100, 125, 150],
-                                   depth=randint(2, 9),  # [7,8,10,20,30]
+            self.parameters = dict(iterations=randint(20, 200),
+                                   depth=randint(2, 9),
                                    learning_rate=uniform(0.04, 0.3),
                                    subsample=uniform(0.5, 0.5))
         else:
-            self.parameters = dict(iterations=randint(20, 200),  # [75, 100, 125, 150],
-                                   depth=randint(2, 9),  # [7,8,10,20,30]
-                                   learning_rate=uniform(0.04, 0.3),  # [0.03, 0.05, 0.1]
+            self.parameters = dict(iterations=randint(20, 200),
+                                   depth=randint(2, 9),
+                                   learning_rate=uniform(0.04, 0.3),
                                    l2_leaf_reg=randint(1, 15),
                                    subsample=uniform(0.5, 0.5)
                                    )

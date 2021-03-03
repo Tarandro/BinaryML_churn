@@ -13,7 +13,7 @@ column_text = 'text'  # (column with texts)
 
 frac = 0.8  # train_test_split fraction                 (data is split in train/test with frac = % for training dataset)
 
-max_run_time_per_modele = 30  # (limit gridsearch time for each model)
+max_run_time_per_model = 30  # (limit gridsearch time for each model)
 
 scoring = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']
 sort_leaderboard = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     data['sentiment'] = data.star.map({5: 1, 4: 1, 3: 0, 2: 0, 1: 0})
 
     bml = BinaryML(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
-                   print_result=print_result, max_run_time_per_modele=max_run_time_per_modele,
+                   print_result=print_result, max_run_time_per_model=max_run_time_per_model,
                    apply_stacking=apply_stacking, apply_blend_model=apply_blend_model, exclude_model=exclude_model,
                    method_embedding=method_embedding)
 

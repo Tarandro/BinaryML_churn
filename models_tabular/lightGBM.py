@@ -11,17 +11,17 @@ class LightGBM(Model):
 
     def hyper_params(self, size_params='small'):
         if size_params == 'small':
-            self.parameters = dict(n_estimators=randint(20, 200),  # [75, 100, 125, 150],
-                                   num_leaves=randint(50, 150),  # [100,150,200,250]
+            self.parameters = dict(n_estimators=randint(20, 200),
+                                   num_leaves=randint(50, 150),
                                    learning_rate=uniform(0.04, 0.3))
         else:
-            self.parameters = dict(n_estimators=randint(20, 200),  # [75, 100, 125, 150],
-                                   num_leaves=randint(50, 150),  # [100,150,200,250]
-                                   learning_rate=uniform(0.04, 0.3),  # [0.03, 0.05, 0.1]
-                                   min_child_weight=loguniform(1e-3, 0.1),  # (default=1e-3)
-                                   feature_fraction=uniform(0.5, 0.5),  # default 1
-                                   reg_alpha=loguniform(0.01, 0.5),  # default 0
-                                   reg_lambda=loguniform(0.01, 0.5))  # default 0
+            self.parameters = dict(n_estimators=randint(20, 200),
+                                   num_leaves=randint(50, 150),
+                                   learning_rate=uniform(0.04, 0.3),
+                                   min_child_weight=loguniform(1e-3, 0.1),
+                                   feature_fraction=uniform(0.5, 0.5),
+                                   reg_alpha=loguniform(0.01, 0.5),
+                                   reg_lambda=loguniform(0.01, 0.5))
         return self.parameters
 
     def model(self, hyper_params={}):

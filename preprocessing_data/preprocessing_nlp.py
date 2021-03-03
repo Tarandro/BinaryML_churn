@@ -1,4 +1,6 @@
 import spacy
+
+# Download Spacy pre-train French model:
 spacy.cli.download("fr_core_news_md")
 nlp = spacy.load("fr_core_news_md")
 
@@ -14,6 +16,7 @@ import string
 from spacy.lang.fr.stop_words import STOP_WORDS as fr_stop
 
 STOPWORDS = list(fr_stop)
+
 
 ####################
 # ngrams functions
@@ -109,11 +112,16 @@ def nlp_preprocessing_spacy(data):
     list_content = list(data)
     doc_spacy_data = [doc for doc in nlp.pipe(list_content, disable=["ner", "tok2vec", "parser"])]
     return doc_spacy_data
-
-
 # doc_spacy_data = nlp_preprocessing_spacy(data.text)
 
+
 def reduce_text_data(doc_spacy_data, keep_pos_tag, lemmatize):
+    """ reduce documents with pos_tag and lemmatization
+        Args:
+            doc_spacy_data (list): list of documents processed by nlp.pipe spacy
+            keep_pos_tag (str or list): 'all' for no pos_tag else list of tags to keeps
+            lemmatize (Boolean)
+    """
     data = []
     for text in doc_spacy_data:
         if keep_pos_tag == 'all':
@@ -128,6 +136,7 @@ def reduce_text_data(doc_spacy_data, keep_pos_tag, lemmatize):
                 new_text = [token.text for token in text if token.pos_ in keep_pos_tag]
         data.append(clean_text(" ".join(new_text)))
     return data
+
 
 def clean_data_2(data):
     """ remove words shorter than 3 and remove double spaces """
@@ -149,6 +158,7 @@ def top_k_frequent_n_gram(data, n_gram, k):
 
     return sort_freq_word[:k]
 
+
 #############################
 #############################
 #############################
@@ -156,6 +166,12 @@ def top_k_frequent_n_gram(data, n_gram, k):
 class Preprocessing_NLP:
 
     def __init__(self, data, column_text=None, target=None):
+        """
+        Args:
+            data (dataframe)
+            column_text (str) : name of the column with texts
+            target (str or list) : names of target columns
+        """
         self.data = data
         self.column_text = column_text
 
@@ -169,6 +185,7 @@ class Preprocessing_NLP:
         self.data = self.data[[self.column_text]]
 
     def fit_transform(self, apply_small_clean=False):
+        """ can apply a small cleaning on text column + preprocess text column with nlp.pipe spacy """
         self.apply_small_clean = apply_small_clean
         if self.apply_small_clean:
             self.data[self.column_text] = self.data[self.column_text].apply(lambda text: small_clean_text(text))
@@ -178,6 +195,10 @@ class Preprocessing_NLP:
         return self.data
 
     def transform(self, data_test):
+        """ apply same transformation as in the fit_transform for data_test
+        Args:
+            data_test (dataframe)
+        """
         has_target = False
         if self.target is not None:
             Y_test = data_test[[col for col in self.target if col in data_test.columns]]
