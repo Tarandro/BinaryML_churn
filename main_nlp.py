@@ -26,7 +26,7 @@ class_weight = True
 apply_stacking = False
 apply_blend_model = True
 
-thr_1 = 0.5 # threshold for probability of 1
+thr_1_test = 0.5 # threshold for probability of 1
 
 # show result:
 print_result = True
@@ -84,6 +84,7 @@ if __name__ == '__main__':
     #####################
 
     leaderboard_val = bml.get_leaderboard(sort_by = sort_leaderboard, dataset = 'val')
+    print('\nValidation Leaderboard (threshold = 0.5)')
     print(leaderboard_val)
     leaderboard_val.to_csv('./results/results_nlp/leaderboard_val.csv', index=False)
 
@@ -105,12 +106,13 @@ if __name__ == '__main__':
     #####################
 
     on_test_data = True
-    bml.leader_predict(on_test_data, thr_1 = thr_1)  # or bml.leader_predict(aml.X_test, aml.Y_test)
+    bml.leader_predict(on_test_data, thr_1 = thr_1_test)  # or bml.leader_predict(aml.X_test, aml.Y_test)
 
     df_prediction = bml.dataframe_predictions
     df_prediction.to_csv('./results/results_nlp/df_prediction.csv', index=False)
 
     leaderboard_test = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='test')
+    print('\nTest Leaderboard (threshold = ' + str(thr_1_test) + ')')
     print(leaderboard_test)
     leaderboard_test.to_csv('./results/results_nlp/leaderboard_test.csv', index=False)
 

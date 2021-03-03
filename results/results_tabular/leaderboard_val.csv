@@ -1,6 +1,2 @@
 name,accuracy_val,recall_val,precision_val,f1_val,roc_auc_val
-BlendModel,0.8448,0.6282,0.6169,0.6225,0.8565
-LightGBM,0.8266,0.6791,0.5616,0.6148,0.8529
-Random_Forest,0.8586,0.4724,0.7397,0.5766,0.8601
-Stacking,0.8512,0.4552,0.7107,0.555,0.8341
-Logistic_Regression,0.7161,0.6914,0.3893,0.4981,0.7713
+CatBoost,0.8049,0.7436,0.5146,0.6083,0.8643

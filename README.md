@@ -29,7 +29,6 @@ streamlit run streamlit.py
 A faire:
 
  - test PCA results + viz en 2D
- - option threshold 0.5 pour binary_proba --
  - ajouter Scraping script + scrap more comments --
  - viz en 2D des embeddings documents et mots
  - add class_weight pour xgboost

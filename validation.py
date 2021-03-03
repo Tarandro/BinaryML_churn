@@ -95,7 +95,18 @@ class Validation:
                 except:
                     y_train, y_val = y[train_index], y[val_index]
 
-                model.fit(x_train, y_train)
+                # add validation set for 'LightGBM', 'CatBoost' and 'XGBoost' (in order to get verbose eval)
+                if self.name == 'LightGBM':
+                    print('Epoch :', str(num_fold))
+                    model.fit(x_train, y_train, eval_set=(x_val, y_val))
+                elif self.name == 'CatBoost':
+                    print('Epoch :', str(num_fold))
+                    model.fit(x_train, y_train, eval_set=(x_val, y_val), verbose_eval=True)
+                elif self.name == 'XGBoost':
+                    print('Epoch :', str(num_fold))
+                    model.fit(x_train, y_train, eval_set=[(x_val, y_val)], eval_metric='logloss', verbose=True)
+                else:
+                    model.fit(x_train, y_train)
 
                 if 'binary_proba' in self.objective:
                     self.oof_val[val_index] = model.predict_proba(x_val)[:, 1].reshape(x_val.shape[0], )

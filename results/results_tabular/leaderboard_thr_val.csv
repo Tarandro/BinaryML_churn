@@ -1,0 +1,4 @@
+name,thr_1,accuracy_val,recall_val,precision_val,f1_val,roc_auc_val
+CatBoost,0.55,0.8218,0.708,0.5485,0.6181,0.8643
+CatBoost,0.5,0.8049,0.7436,0.5146,0.6083,0.8643
+CatBoost,0.45,0.7857,0.784,0.4841,0.5986,0.8643

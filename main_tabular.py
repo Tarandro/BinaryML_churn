@@ -56,7 +56,7 @@ thr_1_test = 0.5 # threshold for probability of 1
 # show result:
 print_result = True
 # list of models to exclude :
-exclude_model = ['SimpleNeuralNetwork', 'XGBoost', 'CatBoost']  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
+exclude_model = ['SimpleNeuralNetwork', 'Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost']  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
 
 if __name__ == '__main__':
     #####################
@@ -112,12 +112,12 @@ if __name__ == '__main__':
     #####################
 
     leaderboard_val = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='val')
-    print('Validation Leaderboard (threshold = 0.5)')
+    print('\nValidation Leaderboard (threshold = 0.5)')
     print(leaderboard_val)
     leaderboard_val.to_csv('./results/results_tabular/leaderboard_val.csv', index=False)
 
     leaderboard_thr_val = bml.get_leaderboard_threshold(list_threshold_1=list_threshold_1, sort_by=sort_leaderboard)
-    print('Validation Leaderboard (different thresholds)')
+    print('\nValidation Leaderboard (different thresholds)')
     print(leaderboard_thr_val)
     leaderboard_thr_val.to_csv('./results/results_tabular/leaderboard_thr_val.csv', index=False)
 
@@ -145,6 +145,6 @@ if __name__ == '__main__':
     df_prediction.to_csv('./results/results_tabular/df_prediction.csv', index=False)
 
     leaderboard_test = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='test')
-    print('Test Leaderboard (threshold = '+str(thr_1_test)+')')
+    print('\nTest Leaderboard (threshold = '+str(thr_1_test)+')')
     print(leaderboard_test)
     leaderboard_test.to_csv('./results/results_tabular/leaderboard_test.csv', index=False)
