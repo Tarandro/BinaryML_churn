@@ -68,6 +68,8 @@ Churn_Modelling dataset :
 
 TODO:
 
+ - rajouter une partie sur streamlit uniquement pour EDA
+ - retirer warning pour shap sur streamlit
  - test PCA results + viz en 2D
  - ajouter Scraping script + scrap more comments --
  - viz en 2D des embeddings documents et mots
