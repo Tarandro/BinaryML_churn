@@ -4,7 +4,7 @@ L'analyse de churn est un domaine qui a pour objectif d’évaluer la perte de c
 
 Dans le cadre de ce projet, l'analyse de démission est étudié de façon binaire, soit avec des données numériques sur une base de données clientèles soit avec des données textuelles issues de commentaires des clients.
 
-Datasets:
+**Datasets:**
 * **Churn_Modelling** (données numériques):
   * donnée clientèle d'une banque, 10000 observations
   * variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
@@ -16,21 +16,21 @@ Datasets:
 
 Le code est construit dans un but d'automatisation de la classification binaire. Il est adapté à tous types de données numériques et données textuelles.
 
-### Classification binaire pour donnéees numériques:
+## Classification binaire pour donnéees numériques:
 
 > `python main_tabular.py`
 
 visualisation streamlit :
 > `streamlit run streamlit_tabular.py`
 
-### Classification binaire pour donnéees textuelles:
+## Classification binaire pour donnéees textuelles:
 
 > `python main_nlp.py`
 
 visualisation streamlit :
 > `streamlit run streamlit_nlp.py`
 
-### Architecture du code
+## Architecture du code
 
 **binaryML** est la classe principale : initialisation, preprocessing, train/test split, normalisation
 
@@ -44,13 +44,13 @@ Possibilité de **predictions** avec les meilleurs modèles choisis par gridsear
 
 Visualisation sur app **streamlit** : EDA, importance des variables, scores des modèles, ...
 
-### Listes des modèles:
+## Listes des modèles:
 
 Données numériques: 'Logistic Regression', 'Random Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork'
 
 Données textuelles: 'tf-idf+Naive Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic Regression', 'Fasttext Attention head', 'BERT'
 
-### Résultats sur données test (20%) (classé par f1 score)
+## Résultats sur données test (20%) (classé par f1 score)
 
 Churn_Modelling dataset :
 
