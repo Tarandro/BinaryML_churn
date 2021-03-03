@@ -6,13 +6,13 @@ Dans le cadre de ce projet, l'analyse de démission est étudié de façon binai
 
 Datasets:
 	- **Churn_Modelling** (données numériques):
-		*donnée clientèle d'une banque, 10000 observations
-		*variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
-		*target : 'Exited'
+* donnée clientèle d'une banque, 10000 observations
+* variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
+* target : 'Exited'
 	- **TrustPilot_data** (données textuelles):
-		*données de commentaires clients du site TustPilot, 440 observations
-		*variable : 'text'
-		*target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
+* données de commentaires clients du site TustPilot, 440 observations
+* variable : 'text'
+* target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
 
 Le code est construit dans un but d'automatisation de la classification binaire. Il est adapté à tous types de données numériques et données textuelles.
 
@@ -37,8 +37,8 @@ visualisation streamlit :
 **class_model** est la classe parent des modèles
 
 Pour chaque modèle :
-	* on lance un **gridsearch** (class_gridsearch.py)
-	* puis **validation** (validation.py)
+* on lance un **gridsearch** (class_gridsearch.py)
+* puis **validation** (validation.py)
 
 Possibilité de **predictions** avec les meilleurs modèles choisis par gridsearch (prediction.py)
 
