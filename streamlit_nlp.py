@@ -32,7 +32,7 @@ except:
     pass
 
 Section = st.sidebar.radio(
-    'Section :', ['Score', 'Data'])
+    'Section :', ['Score', 'Data', 'Extraction'])
 
 if Section == 'Score':
     """ Validation score """
@@ -68,7 +68,7 @@ if Section == 'Score':
     """ Roc Curves"""
     st.image(roc_curves, use_column_width = True)
 
-else:
+elif Section == 'Data':
     """ Data provided """
     data
 
@@ -76,3 +76,10 @@ else:
     data_preprocessed
 
     st.write('Predicted value :', ", ".join([col for col in Y_train.columns]))
+
+else:
+    Html_file = open("./results/results_nlp/extract_word.html", "r")
+    html_string = Html_file.read()
+    html_string_split = html_string.split('<br><br><br><br>')
+    for html_text in html_string_split:
+        st.markdown('<br><br>'+html_text, unsafe_allow_html=True)

@@ -129,5 +129,9 @@ if __name__ == '__main__':
     type_data = 'train'  # 'test'
 
     if 'Fasttext_Attention' in bml.models.keys() or 'BERT' in bml.models.keys():
-        extract_influent_word(bml, type_data, n_influent_word, pr)
+        html = extract_influent_word(bml, type_data, n_influent_word, pr)
+
+        Html_file = open("./results/results_nlp/extract_word.html", "w")
+        Html_file.write(html)
+        Html_file.close()
 

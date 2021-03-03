@@ -182,3 +182,4 @@ def extract_influent_word(bml, type_data, n_influent_word, pr):
 
         html += '<br><br><br>'
     display(HTML(html))
+    return html
