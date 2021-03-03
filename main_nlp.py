@@ -6,7 +6,7 @@ from extraction_words import *
 # Parameters
 #####################
 
-objective = 'text_binary_proba'  # or 'text_binary'            ('binary_proba' : predict proba and 'binary' : predict 0 or 1)
+objective = 'text_binary_proba'  # or 'text_binary'       ('binary_proba' : predict proba and 'binary' : predict 0 or 1)
 target = 'sentiment'
 
 column_text = 'text'  # (column with texts)
@@ -15,8 +15,8 @@ frac = 0.8  # train_test_split fraction                 (data is split in train/
 
 max_run_time_per_model = 30  # (limit gridsearch time for each model)
 
-scoring = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']
-sort_leaderboard = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']
+scoring = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']  # metric to optimize during gridsearch
+sort_leaderboard = 'f1'  # ['accuracy','f1','recall','precision','roc_auc']  # sort dataframe leaderboard by a metric
 
 # number of folds during gridsearch and validation :
 nfolds = 5
@@ -31,7 +31,7 @@ print_result = True
 # list of models to exclude :
 exclude_model = ['Fasttext_Attention', 'BERT']   # FastText work only with pre-training dataset on kaggle (see url method_embedding)
                                                       # Need GPU for BERT
-# NLP : ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression', 'Fasttext_Attention', 'BERT']
+# NLP models: ['tf-idf+Naive_Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic_Regression', 'Fasttext_Attention', 'BERT']
 
 method_embedding = {'Fasttext_Attention': '/kaggle/input/fasttext-french-2b-300d/cc.fr.300.vec',
                     'BERT': 'CamemBERT',

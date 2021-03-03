@@ -21,8 +21,7 @@ class Validation:
         self.fold_id = np.zeros((len(y),))
 
         if self.is_NN:
-            # weights = model.get_weights()
-            # model.save_weights('model.h5')
+            # validation for neural network models :
             total_epochs = 0
 
             kf = KFold(n_splits=nfolds, shuffle=True, random_state=self.seed)
@@ -50,8 +49,6 @@ class Validation:
                         y_train, y_val = y[train_index], y[val_index]
 
                 K.clear_session()
-                # model = model.set_weights(weights)
-                # model.load_weights('model.h5')
 
                 model_nn = model()
 
@@ -85,6 +82,7 @@ class Validation:
                 self.fold_id[val_index] = num_fold
 
         else:
+            # validation for sklearn models, catboost, xgboost and lightgbm :
             kf = KFold(n_splits=nfolds, shuffle=True, random_state=self.seed)
 
             for num_fold, (train_index, val_index) in enumerate(kf.split(x)):

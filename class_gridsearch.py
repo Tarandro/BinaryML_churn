@@ -153,12 +153,17 @@ class GridSearch:
 ##############################
 
 class GridSearch_NN:
+    """ Apply gridsearch for Neural Network model """
 
     def __init__(self, Model_NN, hyper_params):
         self.Model_NN = Model_NN
         self.hyper_params = hyper_params
 
     def optimise(self, params):
+        """ function to optimize by hyperopt library
+        Args :
+            params (dict) : parameters to try
+        """
 
         self.Model_NN.initialize_params(self.x, self.y, params)
 
@@ -287,18 +292,30 @@ class GridSearch_NN:
         plt.show()
 
     def best_params(self, print_result=False):
+        """
+        Return:
+            params (dict) : best parameters from gridsearch
+        """
         params = self.df_all_results.loc[self.index_best_score, 'params']
         if print_result:
             print('Best parameters: ', params)
         return params
 
     def best_score(self, print_result=False):
+        """
+        Return:
+            score (int) : best score from gridsearch
+        """
         score = self.df_all_results.loc[self.index_best_score, 'mean_test_score']
         if print_result:
             print('Mean cross-validated score of the best_estimator: ', np.round(score, 4))
         return score
 
     def best_estimator(self, objective):
+        """ fit a model with best parameters and only on one fold (add a break)
+        Return:
+            model : best model from hyperopt
+        """
         self.Model_NN.initialize_params(self.x, self.y, self.best_params())
 
         model = self.Model_NN.model()

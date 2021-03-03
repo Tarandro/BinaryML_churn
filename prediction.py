@@ -13,11 +13,13 @@ class Prediction:
     def fit(self, model, x, y=None, print_result=False):
 
         if self.is_NN:
+            # validation for neural network models :
             if 'pandas' in str(type(x)):
                 self.prediction = model.predict(x.values)
             else:
                 self.prediction = model.predict(x)
         else:
+            # validation for sklearn models, catboost, xgboost and lightgbm :
             if 'binary_proba' in self.objective:
                 if 'pandas' in str(type(x)):
                     self.prediction = model.predict_proba(x.values)[:, 1]
@@ -30,6 +32,7 @@ class Prediction:
                     self.prediction = model.predict(x)
 
         if y is not None:
+            # calculate metrics if y_true is provided
             if 'binary' in self.objective and self.is_NN:
                 self.prediction = np.argmax(self.prediction, axis=1).reshape(-1)
             else:

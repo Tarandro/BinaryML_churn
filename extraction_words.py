@@ -5,10 +5,10 @@ from IPython.core.display import display, HTML
 
 
 def attention_weight(x, fixed_weights_attention, biais_attention, step_dim):
-    """ refaire les calculs effectuer dans la couche attention pour obtenir les poids"""
-    """ fixed_weights_attention (array) : Weight fixe de la couche attention appris
-        biais_attention (array) : biais de la couche attention appris
-        step_dim (int) : maxlen"""
+    """ redo the calculations made in the attention layer to obtain the weights """
+    """ fixed_weights_attention (array) : Fixed weight of the learned attention layer
+        biais_attention (array) : bias of the learned attention layer
+        step_dim (int) : maxlen """
     """ return : weights (array)"""
 
     features_dim = fixed_weights_attention.shape[0]
@@ -30,6 +30,15 @@ def attention_weight(x, fixed_weights_attention, biais_attention, step_dim):
 
 
 def extract_influent_word(bml, type_data, n_influent_word, pr):
+    """ extraction of influential words : highlight the words with the highest weight
+        for 'Fasttext_Attention' and 'BERT' model
+    Args:
+        bml : class from BinaryML with 'Fasttext_Attention' and 'BERT' model already trained
+        type_data (str) : 'train' or 'test', use documents from train or test dataset
+        n_influent_word (int) : number of words to highlight by documents
+        pr (dict) : (not use for the moment)
+    """
+
     if 'binary_proba' in bml.objective:
         print(" Extraction doesn't work with objective = binary_proba ")
         return None
@@ -52,7 +61,7 @@ def extract_influent_word(bml, type_data, n_influent_word, pr):
         features_dim = fixed_weights_attention.shape[0]
         biais_attention = bml.models['Fasttext_Attention'].best_model.layers[-2].get_weights()[1]
 
-        # Extraction Model
+        # Extraction Model (outputs layer outputs from bml.models['Fasttext_Attention'].best_model)
         extract_model_fasttext_attention = tf.keras.Model(inputs=bml.models['Fasttext_Attention'].best_model.input,
                                                           outputs=(
                                                           bml.models['Fasttext_Attention'].best_model.layers[-4].output,
@@ -66,6 +75,7 @@ def extract_influent_word(bml, type_data, n_influent_word, pr):
         # cha_d = cha
 
         all_layer_weights_camembert = bml.models['BERT'].best_model.layers[-1].get_weights()[0]
+        # Extraction Model (outputs layer outputs from bml.models['BERT'].best_model)
         extract_model_camembert = tf.keras.Model(inputs=bml.models['BERT'].best_model.input,
                                                  outputs=(bml.models['BERT'].best_model.layers[-4].output,
                                                           bml.models['BERT'].best_model.layers[-1].output))
@@ -77,7 +87,7 @@ def extract_influent_word(bml, type_data, n_influent_word, pr):
 
         list_pred = []
         if 'Fasttext_Attention' in bml.models.keys():
-            # EXTRACT MODEL
+            # USE EXTRACT MODEL
             embedding_output, pred_vec = extract_model_fasttext_attention.predict([token_d[k:k + 1]])
             embedding_output = np.squeeze(embedding_output[0])  # dim (MAX_LEN,256)
             pred = np.argmax(pred_vec)
@@ -87,6 +97,7 @@ def extract_influent_word(bml, type_data, n_influent_word, pr):
             weights_attention = np.squeeze(weights_attention[0])
 
         if 'BERT' in bml.models.keys():
+            # USE EXTRACT MODEL
             embedding_output_3, pred_vec_3 = extract_model_camembert.predict(
                 [ids_d[k:k + 1, :], att_d[k:k + 1, :], tok_d[k:k + 1, :]])
             embedding_output_3 = np.squeeze(embedding_output_3[0])  # dim (MAX_LEN,768)
