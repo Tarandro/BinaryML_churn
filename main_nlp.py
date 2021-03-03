@@ -46,8 +46,6 @@ if __name__ == '__main__':
     #####################
 
     data = pd.read_csv('./data/TrustPilot_data.csv')
-    data = data[~data.text.isnull()].reset_index(drop=True)
-    data['sentiment'] = data.star.map({5: 1, 4: 1, 3: 0, 2: 0, 1: 0})
 
     bml = BinaryML(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
                    print_result=print_result, max_run_time_per_model=max_run_time_per_model,

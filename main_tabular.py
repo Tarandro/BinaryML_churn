@@ -56,7 +56,7 @@ thr_1_test = 0.5 # threshold for probability of 1
 # show result:
 print_result = True
 # list of models to exclude :
-exclude_model = ['SimpleNeuralNetwork', 'Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost']  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
+exclude_model = []  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
 
 if __name__ == '__main__':
     #####################
@@ -64,7 +64,6 @@ if __name__ == '__main__':
     #####################
 
     data = pd.read_csv('./data/Churn_Modelling.csv')
-    data = data.iloc[:, 3:]
 
     bml = BinaryML(scoring=scoring, objective=objective, nfolds=nfolds, class_weight=class_weight,
                            print_result=print_result, max_run_time_per_model=max_run_time_per_model,
