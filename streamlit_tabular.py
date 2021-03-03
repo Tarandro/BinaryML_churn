@@ -7,6 +7,7 @@ import seaborn as sns
 from PIL import Image
 from eda_utils import *
 from feature_importance import *
+from pdpbox import pdp
 
 ### run application : streamlit run streamlit_tabular.py
 
@@ -30,6 +31,8 @@ oof_val = pd.read_csv('./results/results_tabular/df_oof_val.csv')
 
 try:
     roc_curves = Image.open('./roc_curves.png')
+    SP = Image.open('./SP.PNG')
+    FI = Image.open('./PI.PNG')
 except:
     pass
 
@@ -134,10 +137,29 @@ elif Section =="Data":
     else:
         raise ValueError('Choisir une variable existante')
 
-elif Section =="Machine Learning explainability":
+elif Section == "Machine Learning explainability":
+
+    """ Permutation importance """
+
+    st.image(FI)
+
+    """ Summary plot"""
+
+    st.image(SP)
+
+    """ Partial plots """
+    var_selec = ['Tenure', 'NumOfProducts', 'Age', 'CreditScore', 'Balance', 'EstimatedSalary']
+    selected_var = st.selectbox(
+        "Choisir une variable à étudier",
+        var_selec
+    )
+    pdp_dist = pdp.pdp_isolate(model=model_fi, dataset=X_test,
+                               model_features=X_test.columns.tolist(), feature=selected_var)
+    pdp.pdp_plot(pdp_dist, selected_var)
+    st.pyplot()
 
     """Shap force plot"""
     st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], X_shap), height=500)
 
     """ Specific row """
-    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_row[1], data_for_prediction_array), height=500)
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_row[1], data_for_prediction_array), height=600)
