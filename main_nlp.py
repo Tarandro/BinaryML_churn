@@ -26,6 +26,8 @@ class_weight = True
 apply_stacking = False
 apply_blend_model = True
 
+thr_1 = 0.5 # threshold for probability of 1
+
 # show result:
 print_result = True
 # list of models to exclude :
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     #####################
 
     on_test_data = True
-    bml.leader_predict(on_test_data)  # or bml.leader_predict(aml.X_test, aml.Y_test)
+    bml.leader_predict(on_test_data, thr_1 = thr_1)  # or bml.leader_predict(aml.X_test, aml.Y_test)
 
     df_prediction = bml.dataframe_predictions
     df_prediction.to_csv('./results/results_nlp/df_prediction.csv', index=False)

@@ -10,7 +10,7 @@ class Prediction:
         self.is_NN = is_NN
         self.class_weight = class_weight
 
-    def fit(self, model, x, y=None, print_result=False):
+    def fit(self, model, x, y=None, print_result=False, thr_1 = 0.5):
 
         if self.is_NN:
             # validation for neural network models :
@@ -39,7 +39,7 @@ class Prediction:
                 self.prediction = self.prediction.reshape(-1)
             self.acc_test, self.f1_test, self.recall_test, self.pre_test, self.roc_auc_test = calcul_metric_binary(y,
                                                                                                                    self.prediction,
-                                                                                                                   print_result)
+                                                                                                                   print_result, thr_1)
 
     def get_prediction(self):
         return self.prediction

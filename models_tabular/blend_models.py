@@ -9,7 +9,7 @@ class BlendModel:
         self.name_model = 'BlendModel'
         self.info_scores = {}
 
-    def validation(self, models, x_train, y_train, print_result = False):
+    def validation(self, models, x_train, y_train, print_result = False, thr_1 = 0.5):
         """ Average validation predictions of all models (models[name_model].info_scores['oof_val'])  """
 
         oof_val = None
@@ -27,12 +27,12 @@ class BlendModel:
         if self.objective == 'binary':
             oof_val = np.where(oof_val > 0.5, 1, 0)
 
-        self.info_scores['accuracy_val'], self.info_scores['f1_val'], self.info_scores['recall_val'], self.info_scores['precision_val'], self.info_scores['roc_auc_val'] = calcul_metric_binary(y_train, oof_val, print_result)
+        self.info_scores['accuracy_val'], self.info_scores['f1_val'], self.info_scores['recall_val'], self.info_scores['precision_val'], self.info_scores['roc_auc_val'] = calcul_metric_binary(y_train, oof_val, print_result, thr_1)
         self.info_scores['fpr'], self.info_scores['tpr'] = roc(y_train.values, oof_val)
 
         self.info_scores['fold_id'], self.info_scores['oof_val'] = models[name_model].info_scores['fold_id'], oof_val
 
-    def prediction(self, models, x_test, y_test = None, print_result = False):
+    def prediction(self, models, x_test, y_test = None, print_result = False, thr_1 = 0.5):
         """ Average test predictions of all models (models[name_model].info_scores['prediction'])  """
 
         prediction = None
@@ -50,6 +50,6 @@ class BlendModel:
             prediction = np.where(prediction > 0.5, 1, 0)
 
         if y_test is not None:
-            self.info_scores['accuracy_test'], self.info_scores['f1_test'], self.info_scores['recall_test'], self.info_scores['precision_test'], self.info_scores['roc_auc_test'] = calcul_metric_binary(y_test, prediction, print_result)
+            self.info_scores['accuracy_test'], self.info_scores['f1_test'], self.info_scores['recall_test'], self.info_scores['precision_test'], self.info_scores['roc_auc_test'] = calcul_metric_binary(y_test, prediction, print_result, thr_1)
 
         self.info_scores['prediction'] = prediction

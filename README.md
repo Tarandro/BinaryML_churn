@@ -29,15 +29,16 @@ streamlit run streamlit.py
 A faire:
 
  - test PCA results + viz en 2D
- - option threshold 0.5 pour binary_proba
- - ajouter Scraping script + scrap more comments
+ - option threshold 0.5 pour binary_proba --
+ - ajouter Scraping script + scrap more comments --
  - viz en 2D des embeddings documents et mots
  - add class_weight pour xgboost
- - afficher some logs during epoch training (seulement lors de la validation)
+ - afficher some logs during epoch training (seulement lors de la validation) --
  - random-state in gridsearch_sklearn = le fixer et avoir le même que dans validation?
  - 5-10 experiences feature engineering + feature importance
  - presentation des modèles
- - écrire un readme
+ - écrire un readme --
 
  - continuer développement streamlit
- - ajouter extraction des mots influents
+ - ajouter extraction des mots influents --
+ - résoudre erreur BERT --

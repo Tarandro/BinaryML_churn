@@ -105,7 +105,7 @@ class Validation:
 
         self.acc_val, self.f1_val, self.recall_val, self.pre_val, self.roc_auc_val = calcul_metric_binary(y,
                                                                                                           self.oof_val,
-                                                                                                          print_result)
+                                                                                                          print_result, 0.5)
         self.fpr, self.tpr = roc(y.values, self.oof_val)
 
         del x_train, x_val, y_train, y_val, model

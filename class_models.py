@@ -52,7 +52,7 @@ class Model:
             'precision_val'], self.info_scores['roc_auc_val'] = val.get_scores()
         self.info_scores['fpr'], self.info_scores['tpr'] = val.get_roc()
 
-    def prediction(self, model, x_test=None, y_test=None, doc_spacy_data_test=[], print_result=False):
+    def prediction(self, model, x_test=None, y_test=None, doc_spacy_data_test=[], print_result=False, thr_1 = 0.5):
         """ Apply prediction for the model on (x_test,y_test)
             (use prediction.py) """
         pred = Prediction(self.objective, self.name_model, self.is_NN, self.class_weight)
@@ -65,7 +65,7 @@ class Model:
                                                             self.method_embedding[self.name_model_bml][0],
                                                             self.method_embedding[self.name_model_bml][1])
 
-        pred.fit(model, x_test, y_test, print_result)
+        pred.fit(model, x_test, y_test, print_result, thr_1)
         self.info_scores['prediction'] = pred.get_prediction()
 
         if y_test is not None:

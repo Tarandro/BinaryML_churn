@@ -17,6 +17,7 @@ from models_nlp.tfidf_SGDclassifier import SGDClassifier_skl
 from models_nlp.tfidf_Logistic_Regression import TfidfLogisticRegression_skl
 from models_nlp.fastText import Fasttext_Attention
 from models_nlp.camembert import BERT
+from utils import calcul_metric_binary
 
 
 class BinaryML:
@@ -268,6 +269,8 @@ class BinaryML:
 
     def get_leaderboard(self, dataset='val', sort_by='accuracy', ascending=False):
         """ Metric scores for each best model
+        Args:
+            dataset (str) : 'val' or 'test', which prediction to use
         Return:
              self.leaderboard (dataframe)
         """
@@ -279,6 +282,38 @@ class BinaryML:
             self.leaderboard[metric + '_' + dataset] = np.round(self.info_scores[metric + '_' + dataset], 4)
         self.leaderboard = pd.DataFrame(self.leaderboard).sort_values(by=sort_by + '_' + dataset, ascending=ascending)
         return self.leaderboard
+
+    def get_leaderboard_threshold(self, list_threshold_1 = [0.5], sort_by='accuracy', ascending=False):
+        """ Metric scores for each best model with different threshold (only on validation prediction)
+        Args:
+            list_threshold_1 (list) : threshold to try (value > threshold -> value = 1)
+        Return:
+             self.leaderboard (dataframe)
+        """
+        if list_threshold_1 == None or list_threshold_1 == []:
+            return None
+
+        dataset = 'val'
+        self.metrics = ['accuracy', 'recall', 'precision', 'f1', 'roc_auc']
+        self.leaderboard_thr = {"name": [], "thr_1": []}
+        for metric in self.metrics:
+            self.leaderboard_thr[metric + '_' + dataset] = []
+
+        for thr in list_threshold_1:
+            for name_model in self.models.keys():
+                y_pred = self.models[name_model].info_scores['oof_val']
+                y_true = self.y_train
+                acc_val, f1_val, recall_val, pre_val, roc_auc_val = calcul_metric_binary(y_true, y_pred, False, thr_1=thr)
+                self.leaderboard_thr["name"].append(name_model)
+                self.leaderboard_thr["thr_1"].append(thr)
+                self.leaderboard_thr["accuracy_val"].append(np.round(acc_val, 4))
+                self.leaderboard_thr["recall_val"].append(np.round(recall_val, 4))
+                self.leaderboard_thr["precision_val"].append(np.round(pre_val, 4))
+                self.leaderboard_thr["f1_val"].append(np.round(f1_val, 4))
+                self.leaderboard_thr["roc_auc_val"].append(np.round(roc_auc_val, 4))
+
+        self.leaderboard_thr = pd.DataFrame(self.leaderboard_thr).sort_values(by=sort_by + '_' + dataset, ascending=ascending)
+        return self.leaderboard_thr
 
     def get_df_all_results(self):
         """ Information gridsearch for each model
@@ -338,23 +373,23 @@ class BinaryML:
         sns.heatmap(result_val.corr(), annot=True, cmap=sns.cm.rocket_r)
         plt.show()
 
-    def leader_predict(self, on_test_data=True, x=None, y=None):
+    def leader_predict(self, on_test_data=True, x=None, y=None, thr_1 = 0.5):
         """ Prediction on x or X_test (if on_test_data=True or x == None) for each best models """
         if on_test_data:  # predict on self.X_test
             for name_model in self.models.keys():
                 if name_model == 'BlendModel':
-                    self.models[name_model].prediction(self.models, self.X_test, self.Y_test, False)
+                    self.models[name_model].prediction(self.models, self.X_test, self.Y_test, False, thr_1=thr_1)
                 else:
                     self.models[name_model].prediction(self.models[name_model].best_model, self.X_test, self.Y_test,
-                                                       self.doc_spacy_data_test)
+                                                       self.doc_spacy_data_test, print_result=False, thr_1=thr_1)
 
         else:  # predict on x
             for name_model in self.models.keys():
                 if name_model == 'BlendModel':
-                    self.models[name_model].prediction(self.models, x, y, False)
+                    self.models[name_model].prediction(self.models, x, y, False, thr_1=thr_1)
                 else:
                     self.models[name_model].prediction(self.models[name_model].best_model, x, y,
-                                                       self.doc_spacy_data_test)
+                                                       self.doc_spacy_data_test, print_result=False, thr_1=thr_1)
 
         # Create a dataframe with predictions of each model + y_true
         dict_prediction = {}

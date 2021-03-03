@@ -6,13 +6,13 @@ from sklearn.utils.class_weight import compute_class_weight
 # Metrics
 #####################
 
-def calcul_metric_binary(y_true_, y_pred, print_results):
+def calcul_metric_binary(y_true_, y_pred, print_results, thr_1):
     try: # try to pass y_true_ to type numpy
         y_true = y_true_.values.copy()
     except:
         y_true = y_true_.copy()
 
-    report = classification_report(y_true.reshape(-1), np.where(y_pred <0.5 ,0 ,1).reshape(-1), digits = 4, output_dict = True)
+    report = classification_report(y_true.reshape(-1), np.where(y_pred > thr_1, 1, 0).reshape(-1), digits = 4, output_dict = True)
     acc = np.round(report['accuracy'] ,4)
     f1 = np.round(report['1']['f1-score'] ,4)
     recall = np.round(report['1']['recall'] ,4)
@@ -29,7 +29,7 @@ def calcul_metric_binary(y_true_, y_pred, print_results):
         print('recall 1 =', recall)
         print('f1 score 1 =' ,f1)
         print()
-        print(classification_report(y_true.reshape(-1), np.where(y_pred <0.5 ,0 ,1).reshape(-1), digits = 3))
+        print(classification_report(y_true.reshape(-1), np.where(y_pred > thr_1, 1, 0).reshape(-1), digits = 3))
 
     return acc, f1, recall, precision, roc_auc
 

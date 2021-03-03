@@ -50,10 +50,13 @@ feature_selection_threshold = 0.8
 apply_stacking = True
 apply_blend_model = True
 
+list_threshold_1 = [0.45, 0.5, 0.55] # threshold for probability of 1, use for validation leaderboard
+thr_1_test = 0.5 # threshold for probability of 1
+
 # show result:
 print_result = True
 # list of models to exclude :
-exclude_model = []  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
+exclude_model = ['SimpleNeuralNetwork', 'XGBoost', 'CatBoost']  # ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork']
 
 if __name__ == '__main__':
     #####################
@@ -108,9 +111,15 @@ if __name__ == '__main__':
     # Leaderboard (Validation score)
     #####################
 
-    leaderboard_val = bml.get_leaderboard(sort_by = sort_leaderboard, dataset = 'val')
+    leaderboard_val = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='val')
+    print('Validation Leaderboard (threshold = 0.5)')
     print(leaderboard_val)
     leaderboard_val.to_csv('./results/results_tabular/leaderboard_val.csv', index=False)
+
+    leaderboard_thr_val = bml.get_leaderboard_threshold(list_threshold_1=list_threshold_1, sort_by=sort_leaderboard)
+    print('Validation Leaderboard (different thresholds)')
+    print(leaderboard_thr_val)
+    leaderboard_thr_val.to_csv('./results/results_tabular/leaderboard_thr_val.csv', index=False)
 
     bml.correlation_models()
     df_all_results = bml.get_df_all_results()
@@ -130,11 +139,12 @@ if __name__ == '__main__':
     #####################
 
     on_test_data = True
-    bml.leader_predict(on_test_data)  # or bml.leader_predict(aml.X_test, aml.Y_test)
+    bml.leader_predict(on_test_data, thr_1=thr_1_test)  # or bml.leader_predict(aml.X_test, aml.Y_test)
 
     df_prediction = bml.dataframe_predictions
     df_prediction.to_csv('./results/results_tabular/df_prediction.csv', index=False)
 
     leaderboard_test = bml.get_leaderboard(sort_by=sort_leaderboard, dataset='test')
+    print('Test Leaderboard (threshold = '+str(thr_1_test)+')')
     print(leaderboard_test)
     leaderboard_test.to_csv('./results/results_tabular/leaderboard_test.csv', index=False)
