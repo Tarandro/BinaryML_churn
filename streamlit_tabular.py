@@ -145,6 +145,8 @@ elif Section == "Machine Learning explainability":
 
     """ Summary plot"""
 
+    shap.summary_plot(shap_values[1], X_shap)
+    st.pyplot()
     st.image(SP)
 
     """ Partial plots """

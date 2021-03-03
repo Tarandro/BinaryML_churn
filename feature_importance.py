@@ -15,13 +15,13 @@ Y_test = pd.read_csv('./results/results_tabular/Y_test.csv')
 model_fi = RandomForestClassifier(max_depth=7, n_estimators=150, class_weight='balanced')
 model_fi.fit(X_train, Y_train.values.ravel())
 
-'''
+
 """ Feature importance """
 
 
 perm = PermutationImportance(model_fi, random_state=15, scoring = 'f1').fit(X_test, Y_test)
 eli5.show_weights(perm, feature_names = X_test.columns.tolist())
-'''
+
 
 """ Shap """
 
