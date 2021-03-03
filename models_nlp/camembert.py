@@ -17,10 +17,10 @@ class BERT(Model):
     def hyper_params(self, size_params='small'):
         self.size_params = size_params
         if self.size_params == 'small':
-            self.parameters = {'learning_rate': hp.choice('learning_rate', [1e-3, 1e-4]),
+            self.parameters = {'learning_rate': hp.choice('learning_rate', [1e-4]),
                                'dropout_rate': hp.uniform('dropout_rate', 0, 0.5)}
         else:
-            self.parameters = {'learning_rate': hp.choice('learning_rate', [1e-3, 1e-4]),
+            self.parameters = {'learning_rate': hp.choice('learning_rate', [1e-4]),
                                'dropout_rate': hp.uniform('dropout_rate', 0, 0.5)}
         return self.parameters
 

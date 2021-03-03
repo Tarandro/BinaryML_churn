@@ -32,7 +32,6 @@ A faire:
  - ajouter Scraping script + scrap more comments --
  - viz en 2D des embeddings documents et mots
  - add class_weight pour xgboost
- - afficher some logs during epoch training (seulement lors de la validation) --
  - random-state in gridsearch_sklearn = le fixer et avoir le même que dans validation?
  - 5-10 experiences feature engineering + feature importance
  - presentation des modèles

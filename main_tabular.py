@@ -124,6 +124,11 @@ if __name__ == '__main__':
     bml.correlation_models()
     df_all_results = bml.get_df_all_results()
     df_all_results.to_csv('./results/results_tabular/df_all_results.csv', index=False)
+
+    df_all_results_mean = df_all_results.groupby('model').mean().sort_values('mean_test_score', ascending=False)
+    print('\nGridSearch information Leaderboard')
+    print(df_all_results_mean)
+    df_all_results.to_csv('./results/results_tabular/df_all_results_mean.csv', index=False)
     bml.show_distribution_scores()
 
     df_oof_val = bml.Y_train.copy()
