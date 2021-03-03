@@ -5,14 +5,14 @@ L'analyse de churn est un domaine qui a pour objectif d’évaluer la perte de c
 Dans le cadre de ce projet, l'analyse de démission est étudié de façon binaire, soit avec des données numériques sur une base de données clientèles soit avec des données textuelles issues de commentaires des clients.
 
 Datasets:
-	- **Churn_Modelling** (données numériques):
-* donnée clientèle d'une banque, 10000 observations
-* variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
-* target : 'Exited'
-	- **TrustPilot_data** (données textuelles):
-* données de commentaires clients du site TustPilot, 440 observations
-* variable : 'text'
-* target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
+* **Churn_Modelling** (données numériques):
+  * donnée clientèle d'une banque, 10000 observations
+  * variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
+  * target : 'Exited'
+* **TrustPilot_data** (données textuelles):
+  * données de commentaires clients du site TustPilot, 440 observations
+  * variable : 'text'
+  * target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
 
 Le code est construit dans un but d'automatisation de la classification binaire. Il est adapté à tous types de données numériques et données textuelles.
 
