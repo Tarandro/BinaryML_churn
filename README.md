@@ -5,46 +5,49 @@ L'analyse de churn est un domaine qui a pour objectif d’évaluer la perte de c
 Dans le cadre de ce projet, l'analyse de démission est étudié de façon binaire, soit avec des données numériques sur une base de données clientèles soit avec des données textuelles issues de commentaires des clients.
 
 Datasets:
-	- Churn_Modelling (données numériques):
-		donnée clientèle d'une banque, 10000 observations
-		variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
-		target : 'Exited'
-	- TrustPilot_data (données textuelles):
-		données de commentaires clients du site TustPilot, 440 observations
-		variable : 'text'
-		target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
+	- **Churn_Modelling** (données numériques):
+		*donnée clientèle d'une banque, 10000 observations
+		*variables : 'Geography', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
+		*target : 'Exited'
+	- **TrustPilot_data** (données textuelles):
+		*données de commentaires clients du site TustPilot, 440 observations
+		*variable : 'text'
+		*target : 'sentiment' (1 si nombre_étoiles >= 4 sinon 0)
 
 Le code est construit dans un but d'automatisation de la classification binaire. Il est adapté à tous types de données numériques et données textuelles.
 
 ### Classification binaire pour donnéees numériques:
 
 > `python main_tabular.py`
+
 visualisation streamlit :
 > `streamlit run streamlit_tabular.py`
 
 ### Classification binaire pour donnéees textuelles:
 
 > `python main_nlp.py`
+
 visualisation streamlit :
 > `streamlit run streamlit_nlp.py`
 
 ### Architecture du code
 
-binaryML est la classe principale : initialisation, preprocessing, train/test split, normalisation
+**binaryML** est la classe principale : initialisation, preprocessing, train/test split, normalisation
 
-class_model est la classe parent des modèles
+**class_model** est la classe parent des modèles
 
 Pour chaque modèle :
-	- on lance un gridsearch (class_gridsearch.py)
-	- puis validation (validation.py)
+	* on lance un **gridsearch** (class_gridsearch.py)
+	* puis **validation** (validation.py)
 
-Possibilité de predictions avec les meilleurs modèles choisis par gridsearch (prediction.py)
+Possibilité de **predictions** avec les meilleurs modèles choisis par gridsearch (prediction.py)
 
-Visualisation sur app streamlit : EDA, importance des variables, scores des modèles, ...
+Visualisation sur app **streamlit** : EDA, importance des variables, scores des modèles, ...
 
 ### Listes des modèles:
 
 Données numériques: 'Logistic Regression', 'Random Forest', 'LightGBM', 'XGBoost', 'CatBoost', 'SimpleNeuralNetwork'
+
 Données textuelles: 'tf-idf+Naive Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logistic Regression', 'Fasttext Attention head', 'BERT'
 
 ### Résultats sur données test (20%) (classé par f1 score)
@@ -52,7 +55,7 @@ Données textuelles: 'tf-idf+Naive Bayes', 'tf-idf+SGDClassifier', 'tf-idf+Logis
 Churn_Modelling dataset :
 
 |name|accuracy|recall|precision|f1|roc_auc|
-|---------------|-------|-------|-------|-------|
+|---------------|-------|-------|-------|-------|-------|
 |Random Forest|0.8650|0.5332|0.7306|0.6165|0.8515|
 |BlendModel|0.8610|0.5209|0.7186|0.6040|0.8531|
 |XGBoost|0.8620|0.5061|0.7331|0.5988|0.8529|
