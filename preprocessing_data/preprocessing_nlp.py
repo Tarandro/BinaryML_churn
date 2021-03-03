@@ -1,8 +1,8 @@
 import spacy
 
 # Download Spacy pre-train French model:
-#spacy.cli.download("fr_core_news_md")
-#nlp = spacy.load("fr_core_news_md")
+spacy.cli.download("fr_core_news_md")
+nlp = spacy.load("fr_core_news_md")
 
 import numpy as np
 import pandas as pd
