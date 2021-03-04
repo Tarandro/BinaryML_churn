@@ -138,6 +138,7 @@ class Preprocessing_tabular:
             target (str or list) : names of target columns
             type_columns (dict) (optional): {'numeric':[], 'categorical':[], 'date':[]} categorize columns by their type
         """
+        self.apply_dummies = True
         self.data = data
 
         self.target = target
@@ -190,10 +191,9 @@ class Preprocessing_tabular:
                 if self.data[col].isnull().sum() > 0:
                     self.data[col] = interpolate_missing_data_numeric(self.data[col], self.method_nan_numeric)
 
-                    # 3rd step
+        # 3rd step
         for col_categorical in self.type_columns['categorical']:
             if col_categorical in self.data.columns:
-                self.apply_dummies = True
                 break
 
         if self.apply_dummies:

@@ -9,6 +9,7 @@ from eda_utils import *
 from feature_importance import *
 from pdpbox import pdp
 
+st.set_option('deprecation.showPyplotGlobalUse', False)
 ### run application : streamlit run streamlit_tabular.py
 
 ################
@@ -138,16 +139,27 @@ elif Section =="Data":
         raise ValueError('Choisir une variable existante')
 
 elif Section == "Machine Learning explainability":
+    """ Sélection du modèle"""
 
+    model_name = st.selectbox(
+        "Choisir le modèle à étudier",
+        models)
+
+    selected_model = bml.models[str(model_name)].best_model
     """ Permutation importance """
+    perm = PermutationImportance(selected_model, random_state=15, scoring='f1').fit(bml.X_test, bml.Y_test)
+    eli5.show_weights(perm, feature_names=bml.X_test.columns.tolist())
 
     st.image(FI)
 
     """ Summary plot"""
-
+    data_SP = data_preprocessed
+    X_shap = data_SP.sample(frac=0.01, random_state=15)
+    print(X_shap)
+    explainer = shap.TreeExplainer(selected_model)
+    shap_values = explainer.shap_values(X_shap)
     shap.summary_plot(shap_values[1], X_shap)
     st.pyplot()
-    st.image(SP)
 
     """ Partial plots """
     var_selec = ['Tenure', 'NumOfProducts', 'Age', 'CreditScore', 'Balance', 'EstimatedSalary']
@@ -155,8 +167,8 @@ elif Section == "Machine Learning explainability":
         "Choisir une variable à étudier",
         var_selec
     )
-    pdp_dist = pdp.pdp_isolate(model=model_fi, dataset=X_test,
-                               model_features=X_test.columns.tolist(), feature=selected_var)
+    pdp_dist = pdp.pdp_isolate(model=selected_model, dataset=bml.X_test,
+                               model_features=bml.X_test.columns.tolist(), feature=selected_var)
     pdp.pdp_plot(pdp_dist, selected_var)
     st.pyplot()
 
@@ -164,4 +176,13 @@ elif Section == "Machine Learning explainability":
     st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], X_shap), height=500)
 
     """ Specific row """
-    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_row[1], data_for_prediction_array), height=600)
+
+    row_to_show = 0
+
+    data_for_prediction = bml.X_test.iloc[row_to_show]  # use 1 row of data here. Could use multiple rows if desired
+    data_for_prediction_array = data_for_prediction.values.reshape(1, -1)
+    # Create object that can calculate shap values
+    selected_model.predict_proba(data_for_prediction_array)
+
+    # Calculate Shap values
+    shap_values_row = explainer.shap_values(data_for_prediction_array)
