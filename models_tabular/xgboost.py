@@ -1,13 +1,15 @@
 from class_models import Model
 import xgboost as xgb
 from scipy.stats import uniform, loguniform, randint
+from sklearn.utils.class_weight import compute_sample_weight
 
 
 class XGBoost(Model):
 
-    def __init__(self, objective, seed = 15, column_text = None, class_weight = None):
+    def __init__(self, objective, seed = 15, column_text = None, class_weight = None, y_train = None):
         Model.__init__(self, objective, seed, column_text, class_weight)
         self.name_model = 'XGBoost'
+        self.y_train = y_train
 
     def hyper_params(self, size_params='small'):
         if size_params == 'small':
@@ -28,9 +30,13 @@ class XGBoost(Model):
         return self.parameters
 
     def model(self, hyper_params={}):
+        if self.class_weight == "balanced" :
+            self.sample_weight = compute_sample_weight(class_weight='balanced', y=self.y_train.values.reshape(-1))
+
         m = xgb.XGBClassifier(
             random_state=self.seed,
             verbosity = 0,
+            sample_weight = self.sample_weight,
             **hyper_params  # ,
             # scale_pos_weight = count(negative examples)/count(Positive examples)
         )

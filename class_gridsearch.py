@@ -199,7 +199,7 @@ class GridSearch_NN:
                 monitor = 'loss'
 
             rlr = ReduceLROnPlateau(monitor='val_' + monitor, factor=0.1, patience=3,
-                                    verbose=0, epsilon=1e-4, mode='auto', min_lr=1e-4)
+                                    verbose=0, min_delta=1e-4, mode='auto', min_lr=1e-4)
 
             # ckp = ModelCheckpoint(f'model_{n}.hdf5', monitor = 'val_loss', verbose = 0,
             #                      save_best_only = True, save_weights_only = True, mode = 'min')
@@ -325,7 +325,7 @@ class GridSearch_NN:
         else:
             monitor = 'loss'
         rlr = ReduceLROnPlateau(monitor='val_' + monitor, factor=0.1, patience=3,
-                                verbose=1, epsilon=1e-4, mode='auto', min_lr=1e-4)
+                                verbose=1, min_delta=1e-4, mode='auto', min_lr=1e-4)
 
         # ckp = ModelCheckpoint(f'model_{n}.hdf5', monitor = 'val_loss', verbose = 0,
         #                      save_best_only = True, save_weights_only = True, mode = 'min')

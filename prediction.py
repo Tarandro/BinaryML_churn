@@ -33,7 +33,7 @@ class Prediction:
 
         if y is not None:
             # calculate metrics if y_true is provided
-            if 'binary' in self.objective and self.is_NN:
+            if self.objective in ['binary', 'text_binary'] and self.is_NN:
                 self.prediction = np.argmax(self.prediction, axis=1).reshape(-1)
             else:
                 self.prediction = self.prediction.reshape(-1)
