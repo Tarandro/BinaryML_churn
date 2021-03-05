@@ -139,13 +139,20 @@ elif Section =="Data":
         raise ValueError('Choisir une variable existante')
 
 elif Section == "Machine Learning explainability":
+
+
     """ Sélection du modèle"""
 
     model_name = st.selectbox(
         "Choisir le modèle à étudier",
         models)
 
-    selected_model = bml.models[str(model_name)].best_model
+
+    #selected_model = bml.models[str(model_name)].best_model
+
+
+    selected_model = RandomForestClassifier()
+    selected_model.fit(bml.X_train, bml.Y_train)
     """ Permutation importance """
     perm = PermutationImportance(selected_model, random_state=15, scoring='f1').fit(bml.X_test, bml.Y_test)
     eli5.show_weights(perm, feature_names=bml.X_test.columns.tolist())
@@ -172,12 +179,12 @@ elif Section == "Machine Learning explainability":
     pdp.pdp_plot(pdp_dist, selected_var)
     st.pyplot()
 
-    """Shap force plot"""
-    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1], X_shap), height=500)
-
     """ Specific row """
 
-    row_to_show = 0
+    row_to_show = st.selectbox(
+        "Choisir le client que vous voulez étudier",
+        np.arange(len(bml.Y_train))
+    )
 
     data_for_prediction = bml.X_test.iloc[row_to_show]  # use 1 row of data here. Could use multiple rows if desired
     data_for_prediction_array = data_for_prediction.values.reshape(1, -1)
@@ -186,3 +193,4 @@ elif Section == "Machine Learning explainability":
 
     # Calculate Shap values
     shap_values_row = explainer.shap_values(data_for_prediction_array)
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values_row[1], data_for_prediction_array))

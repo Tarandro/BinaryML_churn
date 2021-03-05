@@ -99,15 +99,10 @@ if print_result:
 # Training
 #####################
 
-bml.train()
+# bml.train() uncomment pour le final
 
-print(bml.models)
 
 models = ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost']
-
-# TODO :
-#  for name_model in bml.models.keys():
-#       bml.models[name_model].best_model    (or self.models[name_model].best_model)
 
 # model_fi = RandomForestClassifier(max_depth=7, n_estimators=150, class_weight='balanced')
 # model_fi.fit(X_train, Y_train.values.ravel())
