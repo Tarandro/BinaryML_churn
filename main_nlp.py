@@ -38,7 +38,7 @@ exclude_model = ['Fasttext_Attention', 'BERT']   # FastText work only with pre-t
 method_embedding = {'Fasttext_Attention': '/kaggle/input/fasttext-french-2b-300d/cc.fr.300.vec',
                     'BERT': 'CamemBERT',
                     'spacy': [('all', False), (['ADJ', 'NOUN', 'VERB', 'DET'], False),
-                              (['ADJ', 'NOUN'], True)]}
+                              (['ADJ', 'NOUN', 'VERB', 'DET'], True)]}
 
 if __name__ == '__main__':
     #####################
