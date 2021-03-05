@@ -226,7 +226,7 @@ class BinaryML:
         for i, name_model in enumerate(self.name_models):
             if name_model not in self.exclude_model:
                 print('\n\033[4m' + name_model + ' Model\033[0m', ':' if self.print_result else '...', '\n')
-                if name_model == 'CatBoost':
+                if name_model == 'CatBoost' or name_model == 'XGBoost':
                     self.models[name_model] = class_models[i](self.objective, self.seed, self.column_text,
                                                               self.class_weight, self.y_train)
                 else:
