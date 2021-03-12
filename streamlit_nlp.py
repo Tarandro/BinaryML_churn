@@ -13,7 +13,7 @@ from PIL import Image
 ################
 
 
-st.header('BinaryML NLP Visualization')
+st.header('BinaryML NLP')
 
 data = pd.read_csv('./results/results_nlp/data.csv')
 data_preprocessed = pd.read_csv('./results/results_nlp/data_preprocessed.csv')
@@ -32,50 +32,52 @@ except:
     pass
 
 Section = st.sidebar.radio(
-    'Section :', ['Score', 'Data', 'Extraction'])
+    'Section :', ['Data', 'Score', 'Extraction'])
 
-if Section == 'Score':
-    """ Validation score """
+if Section == 'Data':
+    """ Dataset provided : """
+    data
+
+    """ Data preprocessed : """
+    data_preprocessed
+
+    st.write('Predicted value :', ", ".join([col for col in Y_train.columns]))
+    st.write('Percentage training set :', str(int(len(Y_train)/len(data)*100)), "%")
+
+elif Section == 'Score':
+    """ Cross-Validation score """
     leaderboard_val
 
     """ Test score """
     leaderboard_test
 
-    """ Distribution validation score """
-    list_name_models = list(df_all_results.model.unique())
-    rows, cols = 2, 3
-    fig, ax = plt.subplots(rows, cols, figsize=(50,20))
+    #""" Distribution validation score """
+    #list_name_models = list(df_all_results.model.unique())
+    #rows, cols = 2, 3
+    #fig, ax = plt.subplots(rows, cols, figsize=(50,20))
 
-    for row in range(rows):
-        for col in range(cols):
-            if row * cols + col + 1 <= len(list_name_models):
-                name_model = list_name_models[row * cols + col]
-                values = df_all_results[df_all_results.model.isin([name_model])].mean_test_score
-                if np.std(values) < 1e-4:
-                    ax[row, col].hist(values, range = (values.min()-1e-3, values.max()+1e-3))
-                else:
-                    ax[row, col].hist(values)
-                ax[row, col].set_xlabel(name_model + ' ('+str(len(values))+' models)', size = 30)
-                ax[row, col].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-                for tick in ax[row, col].xaxis.get_major_ticks():
-                    tick.label.set_fontsize(30)
-    st.pyplot(fig)
+    #for row in range(rows):
+    #    for col in range(cols):
+    #        if row * cols + col + 1 <= len(list_name_models):
+    #            name_model = list_name_models[row * cols + col]
+    #            values = df_all_results[df_all_results.model.isin([name_model])].mean_test_score
+    #            if np.std(values) < 1e-4:
+    #                ax[row, col].hist(values, range = (values.min()-1e-3, values.max()+1e-3))
+    #            else:
+    #                ax[row, col].hist(values)
+    #            ax[row, col].set_xlabel(name_model + ' ('+str(len(values))+' models)', size = 30)
+    #            ax[row, col].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    #            for tick in ax[row, col].xaxis.get_major_ticks():
+    #                tick.label.set_fontsize(30)
+    #st.pyplot(fig)
 
+    """ Correlation between cross-validation predictions and target : """
     fig, ax = plt.subplots()
     sns.heatmap(oof_val.corr(), annot=True, cmap=sns.cm.rocket_r)
     st.write(fig)
 
-    """ Roc Curves"""
+    """ Roc Curves """
     st.image(roc_curves, use_column_width = True)
-
-elif Section == 'Data':
-    """ Data provided """
-    data
-
-    """ Data preprocessed """
-    data_preprocessed
-
-    st.write('Predicted value :', ", ".join([col for col in Y_train.columns]))
 
 else:
     Html_file = open("./results/results_nlp/extract_word.html", "r")
