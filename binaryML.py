@@ -369,7 +369,7 @@ class BinaryML:
         result_val = pd.DataFrame(
             {name_model: self.models[name_model].info_scores['oof_val'].reshape(-1) for name_model in
              self.models.keys()})
-        sns.set(rc={'figure.figsize': (12, 12)})
+        sns.set(rc={'figure.figsize': (10, 10)})
         sns.heatmap(result_val.corr(), annot=True, cmap=sns.cm.rocket_r)
         plt.show()
 

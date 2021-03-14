@@ -41,6 +41,7 @@ Section = st.sidebar.radio(
     'Section :', ['Score', 'Data', 'Machine Learning explainability'])
 
 if Section == 'Score':
+
     """ Validation score """
     leaderboard_val
 
@@ -68,13 +69,14 @@ if Section == 'Score':
     st.pyplot(fig)
 
     fig, ax = plt.subplots()
-    sns.heatmap(oof_val.corr(), annot=True, cmap=sns.cm.rocket_r)
+    sns.heatmap(oof_val.drop(['BlendModel', 'Stacking'], axis=1).corr(), annot=True, cmap=sns.cm.rocket_r)
     st.write(fig)
 
     """ Roc Curves"""
     st.image(roc_curves, use_column_width = True)
 
 elif Section =="Data":
+
     """ Data provided """
     data
 
@@ -98,41 +100,60 @@ elif Section =="Data":
         st.plotly_chart(subplot_hist(data))
 
     """Comparaison churn VS non-churn"""
-    data_sample_names = ['base', 'kept', 'churn']
-    graph1 = st.selectbox(
-        'Choisir le dataset de gauche :',
-        data_sample_names
-    )
-    graph2 = st.selectbox(
-        'Choisir le dataset de droite :',
-        data_sample_names
-    )
+    # data_sample_names = ['base', 'kept', 'churn']
+    # graph1 = st.selectbox(
+    #     'Choisir le dataset de gauche :',
+    #     data_sample_names
+    # )
+    # graph2 = st.selectbox(
+    #     'Choisir le dataset de droite :',
+    #     data_sample_names
+    # )
+
+    graph1 = 'kept'
+    graph2 = 'churn'
     lost_clients = data[data['Exited'] == 1]
     kept_clients = data[data['Exited'] == 0]
-    showChart2 = st.checkbox("Afficher comparison chart")
-    if showChart2:
-        comp_data1 = choose_datase(graph1, data_sample_names, [data, kept_clients, lost_clients])
-        comp_data2 = choose_datase(graph2, data_sample_names, [data, kept_clients, lost_clients])
-        st.plotly_chart(subplot_hist_comp(comp_data1, comp_data2))
 
-    """Part de churn en fonction de la valeur d'une variable"""
     list_of_cat_var = ['Gender', 'Geography', 'Tenure', 'NumOfProducts', 'HasCrCard', 'IsActiveMember']
     list_of_cont_var = ['Age', 'CreditScore', 'Balance', 'EstimatedSalary']
     var_selec = list_of_cat_var + list_of_cont_var
-    var_choice = st.selectbox(
+
+    var_choice1 = st.selectbox(
+        'Choisir une variable à comparer',
+        var_selec
+    )
+
+    showChart2 = st.checkbox("Afficher comparison chart")
+    if showChart2:
+        #comp_data1 = choose_datase(graph1, data_sample_names, [data, kept_clients, lost_clients])
+        #comp_data2 = choose_datase(graph2, data_sample_names, [data, kept_clients, lost_clients])
+
+        if var_choice1 in ['Age', 'CreditScore', 'EstimatedSalary', 'Tenure'] :
+            st.plotly_chart(hist_2distrib(kept_clients, lost_clients, var_choice1))
+
+        elif var_choice1 == 'Balance':
+            st.plotly_chart(hist_2distrib(kept_clients[kept_clients['Balance']>0], lost_clients[lost_clients['Balance']>0], 'Balance'))
+
+        elif var_choice1 in ['NumOfProducts', 'IsActiveMember', 'HasCrCard', 'Gender','Geography']:
+            new_title = var_choice1 + ' by group'
+            st.plotly_chart(barplot_comp(data, var_choice1, title=new_title))
+
+    """Part de churn en fonction de la valeur d'une variable"""
+    var_choice2 = st.selectbox(
         'Choisir une variable à étudier',
         var_selec
     )
-    if var_choice in list_of_cat_var:
-        countdata = barplot_countdata(data, var_choice)
-        fig = px.bar(countdata, x=var_choice, y="percentage", color='Exited', title="Exited by {}".format(var_choice))
+    if var_choice2 in list_of_cat_var:
+        countdata = barplot_countdata(data, var_choice2)
+        fig = px.bar(countdata, x=var_choice2, y="percentage", color='Exited', title="Exited by {}".format(var_choice2))
         st.plotly_chart(fig)
 
-    elif var_choice in list_of_cont_var:
+    elif var_choice2 in list_of_cont_var:
         data_cut = cutting(data, ['CreditScore', 'Balance', 'EstimatedSalary'], 10)
         data_cut = cutting_bins(data_cut, 'Age')
-        countdata = barplot_countdata(data_cut, var_choice)
-        fig = px.bar(countdata, x=var_choice, y="percentage", color='Exited', title="Exited by {}".format(var_choice))
+        countdata = barplot_countdata(data_cut, var_choice2)
+        fig = px.bar(countdata, x=var_choice2, y="percentage", color='Exited', title="Exited by {}".format(var_choice2))
         st.plotly_chart(fig)
 
     else:

@@ -3,6 +3,8 @@ from plotly.subplots import make_subplots
 import plotly.offline as pyo
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
+
 
 # fonctions d'histogrammes
 def hist_or_circ(colname):  # donne la nature du plot pour une variable
@@ -39,9 +41,14 @@ def subplot_hist(df):  # fais un subplot pour un seul DF
 
     for i, colname in enumerate(df.columns):
         if hist_or_circ(colname) == 'histogram':
-            fig.add_histogram(x=df[colname],
-                              row=(i // 2) + 1,
-                              col=(i % 2) + 1)
+            if colname == 'Balance':
+                fig.add_histogram(x=df[df['Balance'] > 0][colname],
+                                  row=(i // 2) + 1,
+                                  col=(i % 2) + 1)
+            else:
+                fig.add_histogram(x=df[colname],
+                                  row=(i // 2) + 1,
+                                  col=(i % 2) + 1)
 
 
         elif hist_or_circ(colname) == 'pie':
@@ -129,3 +136,48 @@ def barplot_countdata(data, groupbyname): #dataframe for barplot based on groupi
     countdata = countdata.merge(tot_by_group).rename(columns={freqname:'tot_by_group'})
     countdata['percentage'] = countdata['count']/countdata['tot_by_group']
     return(countdata)
+
+
+def barplot_comp(data, absc_var, title=''):
+    grp_var = 'Exited'
+    absc_labels = np.unique(data[absc_var].values)
+    grp_labels = np.unique(data[grp_var].values)
+
+    kept_clients = data[data['Exited'] == 0]
+    lost_clients = data[data['Exited'] == 1]
+
+    y_churn = [i / len(lost_clients) for i in lost_clients[absc_var].value_counts()]
+    y_nonchurn = [i / len(kept_clients) for i in kept_clients[absc_var].value_counts()]
+
+    fig = go.Figure(data=[
+        go.Bar(name='Non-Churn', x=absc_labels, y=y_nonchurn),
+        go.Bar(name='Churn', x=absc_labels, y=y_churn)
+    ])
+    # Change the bar mode
+    fig.update_layout(title_text=title, barmode='group', xaxis_title=absc_var, yaxis_title='percentage by group',
+                      legend_title='groups')
+    return(fig)
+
+def hist_2distrib(df_kept, df_churn, var):
+    x0 = df_kept[var].values
+    x1 = df_churn[var].values
+
+    df =pd.DataFrame(dict(
+        series=np.concatenate((["Non-churn"]*len(x0), ["Churn"]*len(x1))),
+        data  =np.concatenate((x0,x1))
+    ))
+
+    fig = px.histogram(df, x="data", color="series", barmode="overlay", histnorm='probability')
+    fig.update_layout(title_text = 'Histogram of '+var, xaxis_title=var, yaxis_title='percentage', legend_title='groups')
+    return(fig)
+
+def circular_plot(df, colname): #pour afficher juste un seul piechart
+    fig = px.pie(df, names = colname)
+    fig.update_traces(textinfo='value+percent+label')
+    fig.update_layout(title=colname)
+    return(fig)
+
+def hist_plot(df, colname):
+    fig = px.histogram(df, x=colname, histnorm='probability density')
+    fig.update_layout(title_text = 'Histogram of '+colname, xaxis_title=colname, yaxis_title='percentage')
+    return(fig)
