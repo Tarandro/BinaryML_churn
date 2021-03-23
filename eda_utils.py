@@ -57,7 +57,7 @@ def subplot_hist(df):  # fais un subplot pour un seul DF
             fig.add_pie(values=count_list, labels=labels_list,
                         row=(i // 2) + 1, col=(i % 2) + 1)
 
-    fig.update_layout(height=2000, showlegend=False)
+    fig.update_layout(height=2000, width=1000, showlegend=False)
     return(fig)
 
 

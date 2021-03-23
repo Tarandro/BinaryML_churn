@@ -10,7 +10,7 @@ target = 'Exited'
 
 frac = 0.8  # train_test_split fraction                 (data is split in train/test with frac = % for training dataset)
 
-max_run_time_per_model = 60                            # (limit gridsearch time for each model)
+max_run_time_per_model = 1800                           # (limit gridsearch time for each model)
 
 scoring = 'f1'  # ['accuracy','f1','recall','precision','roc_auc'] # metric to optimize during gridsearch
 sort_leaderboard = 'f1'   # ['accuracy','f1','recall','precision','roc_auc']  # sort dataframe leaderboard by a metric

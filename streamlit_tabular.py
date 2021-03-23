@@ -16,7 +16,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 # Load data
 ################
 
-
+st.title("Démission de clients dans la banque et l'assurance")
 st.header('BinaryML Tabular Visualization')
 
 data = pd.read_csv('./results/results_tabular/data.csv')
@@ -37,8 +37,10 @@ try:
 except:
     pass
 
+
+
 Section = st.sidebar.radio(
-    'Section :', ['Score', 'Data', 'Machine Learning explainability'])
+    'Section :', ['Data', 'Score', 'Machine Learning explainability'])
 
 if Section == 'Score':
 
@@ -180,14 +182,6 @@ elif Section == "Machine Learning explainability":
 
     st.image(FI)
 
-    """ Summary plot"""
-    data_SP = data_preprocessed
-    X_shap = data_SP.sample(frac=0.01, random_state=15)
-    print(X_shap)
-    explainer = shap.TreeExplainer(selected_model)
-    shap_values = explainer.shap_values(X_shap)
-    shap.summary_plot(shap_values[1], X_shap)
-    st.pyplot()
 
     """ Partial plots """
     var_selec = ['Tenure', 'NumOfProducts', 'Age', 'CreditScore', 'Balance', 'EstimatedSalary']
@@ -199,6 +193,18 @@ elif Section == "Machine Learning explainability":
                                model_features=bml.X_test.columns.tolist(), feature=selected_var)
     pdp.pdp_plot(pdp_dist, selected_var)
     st.pyplot()
+
+
+    """ Summary plot"""
+    data_SP = data_preprocessed
+    X_shap = data_SP.sample(frac=0.01, random_state=15)
+    print(X_shap)
+    explainer = shap.TreeExplainer(selected_model)
+    shap_values = explainer.shap_values(X_shap)
+    shap.summary_plot(shap_values[1], X_shap)
+    st.pyplot()
+
+
 
     """ Specific row """
 
