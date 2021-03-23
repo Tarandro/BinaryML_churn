@@ -174,8 +174,10 @@ elif Section == "Machine Learning explainability":
     #selected_model = bml.models[str(model_name)].best_model
 
 
-    selected_model = RandomForestClassifier()
+    selected_model = RandomForestClassifier(max_depth=7, n_estimators=125)
+
     selected_model.fit(bml.X_train, bml.Y_train)
+    
     """ Permutation importance """
     perm = PermutationImportance(selected_model, random_state=15, scoring='f1').fit(bml.X_test, bml.Y_test)
     eli5.show_weights(perm, feature_names=bml.X_test.columns.tolist())

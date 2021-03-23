@@ -99,7 +99,7 @@ if print_result:
 # Training
 #####################
 
-# bml.train() uncomment pour le final
+bml.train()
 
 
 models = ['Logistic_Regression', 'Random_Forest', 'LightGBM', 'XGBoost', 'CatBoost']
